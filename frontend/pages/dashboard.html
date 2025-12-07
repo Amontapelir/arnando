@@ -1,0 +1,74 @@
+<div id="dashboard" class="page">
+    <div class="stats-grid">
+        <div class="stat-card">
+            <h3>Общая прибыль</h3>
+            <div class="stat-value" id="totalProfit">0 ₽</div>
+            <div class="stat-label">за все время</div>
+        </div>
+        <div class="stat-card">
+            <h3>Активные объекты</h3>
+            <div class="stat-value" id="activeObjects">0</div>
+            <div class="stat-label">из <span id="totalObjects">0</span></div>
+        </div>
+        <div class="stat-card">
+            <h3>Следующий налог</h3>
+            <div class="stat-value" id="nextTax">0 ₽</div>
+            <div class="stat-label">до 28 числа</div>
+        </div>
+        <div class="stat-card">
+            <h3>Предстоящие платежи</h3>
+            <div class="stat-value" id="upcomingPayments">0</div>
+            <div class="stat-label">на этой неделе</div>
+        </div>
+    </div>
+
+    <div class="dashboard-content">
+        <div class="card">
+            <div class="card-header">
+                <h3>Последние операции</h3>
+                <button class="btn-text" id="showAllTransactionsBtn">Все операции</button>
+            </div>
+            <div id="recentTransactions" class="transactions-list">
+                <div class="transaction-item">
+                    <div>Нет операций</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                <h3>Ближайшие платежи</h3>
+                <button class="btn-text" id="showPaymentScheduleBtn">График</button>
+            </div>
+            <div id="upcomingList" class="upcoming-list">
+                <div class="upcoming-item">
+                    <div>Нет предстоящих платежей</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Инициализация страницы дашборда
+    document.addEventListener('DOMContentLoaded', function() {
+        const showAllTransactionsBtn = document.getElementById('showAllTransactionsBtn');
+        const showPaymentScheduleBtn = document.getElementById('showPaymentScheduleBtn');
+
+        if (showAllTransactionsBtn) {
+            showAllTransactionsBtn.addEventListener('click', function() {
+                if (window.router && typeof window.router.navigateTo === 'function') {
+                    window.router.navigateTo('analytics');
+                }
+            });
+        }
+
+        if (showPaymentScheduleBtn) {
+            showPaymentScheduleBtn.addEventListener('click', function() {
+                if (window.router && typeof window.router.navigateTo === 'function') {
+                    window.router.navigateTo('contracts');
+                }
+            });
+        }
+    });
+</script>

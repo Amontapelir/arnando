@@ -1,0 +1,39 @@
+<div id="objects" class="page">
+    <div class="page-header">
+        <h2>Объекты недвижимости</h2>
+        <button id="addObjectBtn" class="btn-primary">+ Добавить объект</button>
+    </div>
+    <div id="objectsList">
+        <div class="card text-center no-data-message">
+            <div class="no-data-title">Объекты недвижимости</div>
+            <div class="no-data-description">У вас пока нет добавленных объектов недвижимости</div>
+            <div class="no-data-actions">
+                <button class="btn-primary" id="addFirstObjectBtn">Добавить первый объект</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Инициализация страницы объектов
+    document.addEventListener('DOMContentLoaded', function() {
+        const addObjectBtn = document.getElementById('addObjectBtn');
+        const addFirstObjectBtn = document.getElementById('addFirstObjectBtn');
+
+        if (addObjectBtn) {
+            addObjectBtn.addEventListener('click', function() {
+                if (window.app && typeof window.app.showObjectModal === 'function') {
+                    window.app.showObjectModal();
+                }
+            });
+        }
+
+        if (addFirstObjectBtn) {
+            addFirstObjectBtn.addEventListener('click', function() {
+                if (window.app && typeof window.app.showObjectModal === 'function') {
+                    window.app.showObjectModal();
+                }
+            });
+        }
+    });
+</script>
