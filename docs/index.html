@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+    <title>Arnando Аренда: Налоги и Доходы</title>
+    <link rel="stylesheet" href="styles/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/file-saver@2.0.5/dist/FileSaver.min.js"></script>
+</head>
+<body class="light-theme">
+
+    <!-- Панель уведомлений -->
+    <div id="notificationsPanel" class="notifications-panel hidden">
+        <div class="notifications-header">
+            <h3>Уведомления</h3>
+            <button id="closeNotifications" class="btn-text">✕</button>
+        </div>
+        <div id="notificationsList" class="notifications-list">
+        </div>
+    </div>
+
+    <!-- Модальное окно аккаунта -->
+    <div id="accountModal" class="modal hidden">
+        <div class="modal-content">
+            <h3 id="accountModalTitle">Вход в аккаунт</h3>
+            <form id="accountForm">
+                <div class="form-group">
+                    <label>Email:</label>
+                    <input type="email" id="accountEmail" required class="form-input" placeholder="your@email.com">
+                </div>
+                <div class="form-group">
+                    <label>Пароль:</label>
+                    <input type="password" id="accountPassword" required class="form-input" placeholder="••••••••">
+                </div>
+                <div class="form-group" id="confirmPasswordGroup" style="display: none;">
+                    <label>Подтвердите пароль:</label>
+                    <input type="password" id="accountConfirmPassword" class="form-input" placeholder="••••••••">
+                </div>
+
+                <!-- Выбор типа арендодателя при регистрации -->
+                <div class="form-group" id="landlordTypeGroup" style="display: none;">
+                    <label>Тип арендодателя:</label>
+                    <div class="landlord-type-selector">
+                        <label class="landlord-type-label">
+                            <input type="radio" name="accountLandlordType" value="self_employed" checked>
+                            <span>Самозанятый (НПД)</span>
+                        </label>
+                        <label class="landlord-type-label">
+                            <input type="radio" name="accountLandlordType" value="individual_entrepreneur">
+                            <span>ИП (УСН)</span>
+                        </label>
+                        <label class="landlord-type-label">
+                            <input type="radio" name="accountLandlordType" value="individual">
+                            <span>Физлицо (НДФЛ)</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="form-options">
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="rememberMe">
+                        <span>Запомнить меня</span>
+                    </label>
+                    <a href="#" id="forgotPassword" class="text-link">Забыли пароль?</a>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" id="cancelAccountBtn" class="btn-secondary">Отмена</button>
+                    <button type="submit" class="btn-primary" id="accountSubmitBtn">Войти</button>
+                    <button type="button" id="switchToRegister" class="btn-text">Создать аккаунт</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Модальное окно печати -->
+    <div id="printModal" class="modal hidden">
+        <div class="modal-content print-modal">
+            <h3>Печать документа</h3>
+            <div class="print-options">
+                <div class="form-group">
+                    <label>Тип документа:</label>
+                    <select id="printType" class="form-select">
+                        <option value="contract">Договор аренды</option>
+                        <option value="financial_report">Финансовый отчет</option>
+                        <option value="tax_report">Налоговый отчет</option>
+                        <option value="payment_schedule">График платежей</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Период:</label>
+                    <select id="printPeriod" class="form-select">
+                        <option value="current_month">Текущий месяц</option>
+                        <option value="last_month">Прошлый месяц</option>
+                        <option value="current_quarter">Текущий квартал</option>
+                        <option value="current_year">Текущий год</option>
+                        <option value="custom">Произвольный период</option>
+                    </select>
+                </div>
+                <div id="customPeriod" class="form-row hidden">
+                    <div class="form-group">
+                        <label>С:</label>
+                        <input type="date" id="printDateFrom" class="form-input">
+                    </div>
+                    <div class="form-group">
+                        <label>По:</label>
+                        <input type="date" id="printDateTo" class="form-input">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Формат:</label>
+                    <div class="format-selector">
+                        <label class="format-label">
+                            <input type="radio" name="printFormat" value="pdf" checked>
+                            <span>PDF</span>
+                        </label>
+                        <label class="format-label">
+                            <input type="radio" name="printFormat" value="excel">
+                            <span>Excel</span>
+                        </label>
+                        <label class="format-label">
+                            <input type="radio" name="printFormat" value="word">
+                            <span>Word</span>
+                        </label>
+                    </div>
+                </div>
+                <div class="form-group" id="contractSelectGroup" style="display: none;">
+                    <label>Договор:</label>
+                    <select id="contractSelect" class="form-select">
+                        <option value="">Выберите договор</option>
+                    </select>
+                </div>
+            </div>
+            <div class="modal-actions">
+                <button type="button" id="cancelPrintBtn" class="btn-secondary">Отмена</button>
+                <button type="button" id="generatePrintBtn" class="btn-primary">Сформировать</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Модальное окно объекта -->
+    <div id="objectModal" class="modal hidden object-modal">
+        <div class="modal-content">
+            <h3 id="objectModalTitle">Добавить объект</h3>
+            <form id="objectForm">
+                <input type="hidden" id="objectId">
+
+                <div class="form-group required">
+                    <label>Название объекта:</label>
+                    <input type="text" id="objectName" required class="form-input" placeholder="Квартира в центре">
+                </div>
+
+                <div class="form-group required">
+                    <label>Адрес:</label>
+                    <input type="text" id="objectAddress" required class="form-input" placeholder="г. Москва, ул. Тверская, д. 1">
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group required">
+                        <label>Тип недвижимости:</label>
+                        <select id="objectType" class="form-select">
+                            <option value="apartment">Квартира</option>
+                            <option value="house">Дом</option>
+                            <option value="room">Комната</option>
+                            <option value="commercial">Коммерческая</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group required">
+                        <label>Базовая ставка аренды (₽/мес):</label>
+                        <input type="number" id="objectRent" required class="form-input" placeholder="30000">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Площадь (кв.м):</label>
+                    <input type="number" id="objectArea" class="form-input" placeholder="50">
+                </div>
+
+                <div class="form-group">
+                    <label>Количество комнат:</label>
+                    <input type="number" id="objectRooms" class="form-input" placeholder="2">
+                </div>
+
+                <div class="form-group">
+                    <label>Описание:</label>
+                    <textarea id="objectDescription" class="form-input" placeholder="Описание объекта..." rows="3"></textarea>
+                </div>
+
+                <div class="modal-actions">
+                    <button type="button" id="cancelObjectBtn" class="btn-secondary">Отмена</button>
+                    <button type="submit" class="btn-primary">Сохранить объект</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Модальное окно договора -->
+    <div id="contractModal" class="modal hidden contract-modal">
+        <div class="modal-content">
+            <h3 id="contractModalTitle">Новый договор</h3>
+            <form id="contractForm">
+                <input type="hidden" id="contractId">
+
+                <!-- Основная информация -->
+                <div class="contract-section">
+                    <h4>Основная информация</h4>
+                    <div class="form-group required">
+                        <label>Объект недвижимости:</label>
+                        <select id="contractObject" required class="form-select"></select>
+                        <div id="noObjectsWarning" class="warning-message hidden">
+                            ⚠️ Сначала добавьте объект недвижимости на вкладке "Объекты"
+                        </div>
+                    </div>
+                    <div class="form-group required">
+                        <label>Арендатор (ФИО/Название):</label>
+                        <input type="text" id="contractTenant" required class="form-input" placeholder="Иванов Иван Иванович">
+                    </div>
+
+                    <!-- Выбор типа арендатора для самозанятых -->
+                    <div class="form-group" id="contractTenantTypeGroup" style="display: none;">
+                        <label>Тип арендатора:</label>
+                        <div class="tenant-type-selector">
+                            <label class="tenant-type-label">
+                                <input type="radio" name="contractTenantType" value="physical" checked>
+                                <span>Физлицо</span>
+                            </label>
+                            <label class="tenant-type-label">
+                                <input type="radio" name="contractTenantType" value="legal">
+                                <span>Юрлицо</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group required">
+                            <label>Дата начала:</label>
+                            <input type="date" id="contractStart" required class="form-input">
+                        </div>
+                        <div class="form-group required">
+                            <label>Дата окончания:</label>
+                            <input type="date" id="contractEnd" required class="form-input">
+                        </div>
+                    </div>
+                    <div class="form-group required">
+                        <label>Сумма аренды (₽/мес):</label>
+                        <input type="number" id="contractAmount" required class="form-input" placeholder="30000">
+                    </div>
+                    <div class="form-group required">
+                        <label>График платежей:</label>
+                        <select id="contractSchedule" class="form-select">
+                            <option value="monthly">Ежемесячно</option>
+                            <option value="quarterly">Поквартально</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Дополнительная информация об арендаторе -->
+                <div class="contract-section">
+                    <div class="section-toggle">
+                        <input type="checkbox" id="toggleTenantInfo">
+                        <label for="toggleTenantInfo">Добавить дополнительную информацию об арендаторе</label>
+                    </div>
+
+                    <div class="section-content" id="tenantInfoSection" style="display: none;">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Паспорт серия:</label>
+                                <input type="text" id="tenantPassportSeries" class="form-input" placeholder="1234" maxlength="4">
+                            </div>
+                            <div class="form-group">
+                                <label>Паспорт номер:</label>
+                                <input type="text" id="tenantPassportNumber" class="form-input" placeholder="567890" maxlength="6">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Паспорт выдан:</label>
+                            <input type="text" id="tenantPassportIssuedBy" class="form-input" placeholder="Отделом УФМС России по г. Москве">
+                        </div>
+
+                        <div class="form-group">
+                            <label>Дата выдачи паспорта:</label>
+                            <input type="date" id="tenantPassportIssueDate" class="form-input">
+                        </div>
+
+                        <div class="form-group">
+                            <label>Адрес регистрации:</label>
+                            <textarea id="tenantRegistrationAddress" class="form-input" placeholder="г. Москва, ул. Примерная, д. 1, кв. 1" rows="2"></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label>ИНН арендатора:</label>
+                            <input type="text" id="tenantINN" class="form-input" placeholder="123456789012" maxlength="12">
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Телефон:</label>
+                                <input type="tel" id="tenantPhone" class="form-input" placeholder="+7 (999) 123-45-67">
+                            </div>
+                            <div class="form-group">
+                                <label>Email:</label>
+                                <input type="email" id="tenantEmail" class="form-input" placeholder="tenant@example.com">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Дополнительные условия -->
+                <div class="contract-section">
+                    <div class="section-toggle">
+                        <input type="checkbox" id="toggleAdditionalTerms">
+                        <label for="toggleAdditionalTerms">Добавить дополнительные условия</label>
+                    </div>
+
+                    <div class="section-content" id="additionalTermsSection" style="display: none;">
+                        <div class="form-group">
+                            <label>Залог (депозит):</label>
+                            <input type="number" id="contractDeposit" class="form-input" placeholder="0">
+                        </div>
+
+                        <div class="form-group">
+                            <label>Коммунальные платежи:</label>
+                            <select id="contractUtilities" class="form-select">
+                                <option value="included">Включены в аренду</option>
+                                <option value="separate">Оплачиваются отдельно</option>
+                                <option value="tenant">Оплачивает арендатор</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Примечания:</label>
+                            <textarea id="contractNotes" class="form-input" placeholder="Дополнительные условия договора..." rows="3"></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-actions">
+                    <button type="button" id="cancelContractBtn" class="btn-secondary">Отмена</button>
+                    <button type="submit" class="btn-primary" id="saveContractBtn">Сохранить договор</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Основное приложение -->
+    <div id="app" class="app">
+        <header class="header">
+            <div class="header-content">
+                <h1>Аренда: Налоги и Доходы</h1>
+                <div class="header-actions">
+                    <button id="notificationsBtn" class="btn-icon" title="Уведомления">
+                        <i class="fas fa-bell"></i>
+                        <span id="notificationCounter" class="notification-counter hidden">0</span>
+                    </button>
+                    <button id="printBtn" class="btn-secondary">Печать</button>
+                    <button id="exportBtn" class="btn-secondary">Экспорт</button>
+                    <button id="accountBtn" class="btn-primary">
+                        <i class="fas fa-user"></i>
+                        <span id="accountStatus">Войти</span>
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <nav class="navigation">
+            <div class="nav-content">
+                <a href="#dashboard" class="nav-btn active" data-page="dashboard">📊 Дашборд</a>
+                <a href="#objects" class="nav-btn" data-page="objects">🏠 Объекты</a>
+                <a href="#calculator" class="nav-btn" data-page="calculator">🧮 Калькулятор</a>
+                <a href="#contracts" class="nav-btn" data-page="contracts">📑 Договоры</a>
+                <a href="#analytics" class="nav-btn" data-page="analytics">📈 Аналитика</a>
+                <button id="themeToggle" class="nav-btn theme-toggle">🌙 Тёмная</button>
+            </div>
+        </nav>
+
+        <main class="main-content" id="main-content">
+            <!-- Контент будет загружаться динамически -->
+            <div class="loading-container">
+                <div class="loading-spinner"></div>
+                <p>Загрузка...</p>
+            </div>
+        </main>
+    </div>
+
+    <!-- <script src="js/router.js"></script> -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script src="js/api.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/calculator.js"></script>
+    <script src="js/charts.js"></script>
+    <script src="js/notifications.js"></script>
+    <script src="js/printManager.js"></script>
+    <script src="js/router.js"></script>
+    <script src="js/app.js"></script>
+
+    <script>
+        // Обработчик выбора типа документа для печати
+        document.getElementById('printType').addEventListener('change', function() {
+            const contractSelectGroup = document.getElementById('contractSelectGroup');
+            if (this.value === 'contract') {
+                contractSelectGroup.style.display = 'block';
+            } else {
+                contractSelectGroup.style.display = 'none';
+            }
+        });
+
+        // Обработчик выбора периода для печати
+        document.getElementById('printPeriod').addEventListener('change', function() {
+            const customPeriod = document.getElementById('customPeriod');
+            if (this.value === 'custom') {
+                customPeriod.classList.remove('hidden');
+            } else {
+                customPeriod.classList.add('hidden');
+            }
+        });
+
+        // Обработчик дополнительной информации в договорах
+        document.getElementById('toggleTenantInfo').addEventListener('change', function() {
+            const tenantInfoSection = document.getElementById('tenantInfoSection');
+            tenantInfoSection.style.display = this.checked ? 'block' : 'none';
+        });
+
+        document.getElementById('toggleAdditionalTerms').addEventListener('change', function() {
+            const additionalTermsSection = document.getElementById('additionalTermsSection');
+            additionalTermsSection.style.display = this.checked ? 'block' : 'none';
+        });
+    </script>
+
+    <script>
+        // Обработчик закрытия уведомлений
+        document.getElementById('closeNotifications')?.addEventListener('click', () => {
+            document.getElementById('notificationsPanel').classList.add('hidden');
+        });
+    </script>
+</body>
+</html>

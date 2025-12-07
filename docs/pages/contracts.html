@@ -1,0 +1,39 @@
+<div id="contracts" class="page">
+    <div class="page-header">
+        <h2>Договоры аренды</h2>
+        <button id="addContractBtn" class="btn-primary">+ Новый договор</button>
+    </div>
+    <div id="contractsList">
+        <div class="card text-center no-data-message">
+            <div class="no-data-title">Договоры аренды</div>
+            <div class="no-data-description">У вас пока нет активных договоров аренды</div>
+            <div class="no-data-actions">
+                <button class="btn-primary" id="addFirstContractBtn">Добавить первый договор</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Инициализация страницы договоров
+    document.addEventListener('DOMContentLoaded', function() {
+        const addContractBtn = document.getElementById('addContractBtn');
+        const addFirstContractBtn = document.getElementById('addFirstContractBtn');
+
+        if (addContractBtn) {
+            addContractBtn.addEventListener('click', function() {
+                if (window.app && typeof window.app.showContractModal === 'function') {
+                    window.app.showContractModal();
+                }
+            });
+        }
+
+        if (addFirstContractBtn) {
+            addFirstContractBtn.addEventListener('click', function() {
+                if (window.app && typeof window.app.showContractModal === 'function') {
+                    window.app.showContractModal();
+                }
+            });
+        }
+    });
+</script>
