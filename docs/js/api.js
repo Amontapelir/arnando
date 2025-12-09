@@ -3,7 +3,10 @@
  */
 class ApiService {
     constructor() {
-        this.baseUrl = 'http://localhost:8000';
+        // Для продакшена (Render)
+        this.baseUrl = 'https://rent-tax-backend.onrender.com';
+        // Для локальной разработки:
+        // this.baseUrl = 'http://localhost:8000';
         this.token = localStorage.getItem('auth_token');
     }
 
@@ -201,4 +204,5 @@ class ApiService {
 }
 
 // Глобальный экземпляр API
+
 const apiService = new ApiService();
