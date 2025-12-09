@@ -1260,14 +1260,23 @@ class RentTaxApp {
         if (printModal) {
             // Заполняем список договоров для печати
             this.populateContractSelectForPrint();
-
+    
             // Устанавливаем текущую дату по умолчанию для произвольного периода
             const today = new Date();
             const firstDayOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
-
+    
             document.getElementById('printDateFrom').value = firstDayOfMonth.toISOString().split('T')[0];
             document.getElementById('printDateTo').value = today.toISOString().split('T')[0];
-
+    
+            // Проверяем текущий выбранный тип печати
+            const printType = document.getElementById('printType');
+            const contractSelectGroup = document.getElementById('contractSelectGroup');
+            
+            // Если выбран тип "contract", показываем группу выбора договора
+            if (printType && printType.value === 'contract' && contractSelectGroup) {
+                contractSelectGroup.style.display = 'block';
+            }
+    
             printModal.classList.remove('hidden');
         }
     }
@@ -1563,4 +1572,5 @@ document.addEventListener('DOMContentLoaded', async function() {
             window.app.showErrorScreen(error);
         }
     }
+
 });
