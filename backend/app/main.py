@@ -46,6 +46,7 @@ app.add_middleware(
         "http://localhost:8080",
         "https://amontapelir.github.io",
         "https://amontapelir.github.io/arnando/",
+        "https://rent-tax-backend.onrender.com",
     ],
 
 
@@ -168,4 +169,5 @@ def delete_contract(contract_id: int, db: Session = Depends(get_db), current_use
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, host="0.0.0.0", port=8000)
+
 
