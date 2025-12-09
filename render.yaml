@@ -3,9 +3,10 @@ services:
     name: rent-tax-backend
     env: python
     buildCommand: |
-      pip install -r requirements.txt
-      alembic upgrade head
-    startCommand: uvicorn app.main:app --host 0.0.0.0 --port 8000
+      pip install --no-cache-dir --upgrade pip setuptools wheel
+      pip install --no-cache-dir -r backend/requirements.txt
+    startCommand: |
+      cd backend && alembic upgrade head && uvicorn app.main:app --host 0.0.0.0 --port 8000
     envVars:
       - key: DATABASE_URL
         fromDatabase:
@@ -13,5 +14,4 @@ services:
           property: connectionString
       - key: SECRET_KEY
         generateValue: true
-      - key: PYTHON_VERSION
-        value: 3.9.0
+    autoDeploy: true
