@@ -43,7 +43,8 @@ app.add_middleware(
     allow_origins=[
         "http://localhost:3000",
         "http://127.0.0.1:3000",
-        "http://localhost:8080"
+        "http://localhost:8080",
+        "https://amontapelir.github.io",
         "https://amontapelir.github.io/arnando/",
     ],
 
@@ -167,3 +168,4 @@ def delete_contract(contract_id: int, db: Session = Depends(get_db), current_use
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, host="0.0.0.0", port=8000)
+
