@@ -40,7 +40,14 @@ app = FastAPI(title="Rent Tax API", version="1.0.0")
 # CORS middleware
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000", "http://127.0.0.1:3000", "http://localhost:8080"],
+    allow_origins=[
+        "http://localhost:3000",
+        "http://127.0.0.1:3000",
+        "http://localhost:8080"
+        "https://amontapelir.github.io/arnando/",
+    ],
+
+
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
