@@ -1,4 +1,4 @@
-FROM python:3.9-slim
+FROM python:3.11-slim
 
 # Устанавливаем системные зависимости
 RUN apt-get update && apt-get install -y \
@@ -9,8 +9,10 @@ RUN apt-get update && apt-get install -y \
 
 WORKDIR /app
 
+# Копируем зависимости
 COPY requirements.txt .
 
+# Устанавливаем Python зависимости
 RUN pip install --upgrade pip
 RUN pip install --no-cache-dir -r requirements.txt
 
@@ -18,8 +20,6 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY . .
 
 EXPOSE 8000
-# БЫЛО:
-#CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
 
-# СТАЛО:
+# Выполняем миграции и запускаем сервер
 CMD ["sh", "-c", "alembic upgrade head && uvicorn app.main:app --host 0.0.0.0 --port 8000"]
