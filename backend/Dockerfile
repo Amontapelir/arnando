@@ -16,5 +16,5 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY . .
 
-# Запускаем миграции перед стартом приложения
-CMD ["sh", "-c", "alembic upgrade head && uvicorn app.main:app --host 0.0.0.0 --port 8000"]
+# Удаляем миграции из команд запуска, создаем таблицы напрямую
+CMD ["sh", "-c", "python -c \"from app.database import Base, engine; Base.metadata.create_all(bind=engine); print('✅ Tables created successfully')\" && uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload"]
