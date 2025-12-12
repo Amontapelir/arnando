@@ -6,6 +6,5 @@ passlib[bcrypt]==1.7.4
 python-jose[cryptography]==3.3.0
 python-multipart==0.0.6
 alembic==1.12.1
-# Используйте альтернативу без Rust компиляции
-pydantic==1.10.13  # Старая версия, но работает
+pydantic==2.4.2  # ← Изменено с 2.5.0
 python-dotenv==1.0.0
