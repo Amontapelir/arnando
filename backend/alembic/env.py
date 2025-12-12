@@ -47,14 +47,15 @@ def run_migrations_offline() -> None:
 
 def run_migrations_online() -> None:
     """Run migrations in 'online' mode."""
-    connectable = engine_from_config(
-        config.get_section(config.config_ini_section, {}),
-        prefix="sqlalchemy.",
+    # Вместо использования engine_from_config, создаем engine напрямую
+    from sqlalchemy import create_engine
+    
+    connectable = create_engine(
+        settings.DATABASE_URL,
         poolclass=pool.NullPool,
+        pool_pre_ping=True,
+        connect_args={'sslmode': 'require'} if "localhost" not in settings.DATABASE_URL else {}
     )
-
-    # Переопределяем URL базы данных
-    connectable.url = settings.DATABASE_URL
 
     with connectable.connect() as connection:
         context.configure(
