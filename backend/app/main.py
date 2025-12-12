@@ -33,7 +33,7 @@ from .config import settings
 
 print("🔄 Инициализация приложения...")
 
-# models.Base.metadata.create_all(bind=engine)
+models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI(title="Rent Tax API", version="1.0.0")
 
@@ -169,5 +169,6 @@ def delete_contract(contract_id: int, db: Session = Depends(get_db), current_use
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, host="0.0.0.0", port=8000)
+
 
 
