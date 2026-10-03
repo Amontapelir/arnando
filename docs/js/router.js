@@ -162,9 +162,11 @@ class Router {
                 break;
             case 'objects':
                 if (window.app.loadObjects) window.app.loadObjects();
+                this.bindPageButton('addObjectBtn', 'showObjectModal');
                 break;
             case 'contracts':
                 if (window.app.loadContracts) window.app.loadContracts();
+                this.bindPageButton('addContractBtn', 'showContractModal');
                 break;
             case 'calculator':
                 this.initializeCalculatorPage();
@@ -176,6 +178,18 @@ class Router {
                 if (window.app.loadProfilePage) window.app.loadProfilePage();
                 break;
         }
+    }
+
+    // Скрипты внутри подгруженных страниц не выполняются, поэтому кнопки шапки привязываем здесь
+    bindPageButton(buttonId, methodName) {
+        const btn = document.getElementById(buttonId);
+        if (!btn || btn.dataset.bound) return;
+        btn.dataset.bound = '1';
+        btn.addEventListener('click', () => {
+            if (window.app && typeof window.app[methodName] === 'function') {
+                window.app[methodName]();
+            }
+        });
     }
 
     async initializeCalculatorPage() {

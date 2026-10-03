@@ -3,10 +3,14 @@ class ChartsManager {
         this.incomeExpenseChart = null;
         this.objectsChart = null;
         this.isInitialized = false;
-        this.app = window.app;
         this.currentPeriod = 'quarter';
         this.customStartDate = null;
         this.customEndDate = null;
+    }
+
+    // window.app создаётся позже, чем этот класс, поэтому читаем его в момент обращения
+    get app() {
+        return window.app;
     }
 
     async init() {
@@ -47,10 +51,10 @@ class ChartsManager {
             }
 
             // Создаем графики (всегда новые)
-            this.createCharts();
+            this.initializeCharts();
 
             // Инициализируем обработчики событий
-            this.initializeEventListeners();
+            this.setupEventListeners();
 
             // Обновляем данные
             this.updateCharts();
