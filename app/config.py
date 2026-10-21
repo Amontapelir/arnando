@@ -12,7 +12,7 @@ class Settings(BaseSettings):
     access_token_expire_minutes: int = 30
 
     # App
-    debug: bool = True
+    debug: bool = False
     allowed_hosts: List[str] = ["localhost", "127.0.0.1", "0.0.0.0"]
 
     class Config:

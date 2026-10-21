@@ -207,4 +207,3 @@ document.head.appendChild(style);
 
 // Экспорт функций
 window.showNotification = showNotification;
-window.loadContent = loadContent;

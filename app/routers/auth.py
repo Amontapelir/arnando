@@ -86,55 +86,6 @@ async def register(
         )
 
 
-@router.post("/register", response_model=schemas.User)
-async def register(
-        response: Response,
-        email: str,
-        password: str,
-        full_name: str = None,
-        phone: str = None,
-        tax_mode: str = "self_employed",
-        db: AsyncSession = Depends(get_db)
-):
-    # Проверяем существование пользователя
-    db_user = await crud.get_user_by_email(db, email=email)
-    if db_user:
-        raise HTTPException(
-            status_code=400,
-            detail="Пользователь с таким email уже существует"
-        )
-
-    # Создаем объект пользователя
-    user_create = schemas.UserCreate(
-        email=email,
-        password=password,
-        full_name=full_name,
-        phone=phone,
-        tax_mode=tax_mode
-    )
-
-    user = await crud.create_user(db=db, user=user_create)
-
-    # Автоматически логиним пользователя
-    access_token_expires = timedelta(minutes=settings.access_token_expire_minutes)
-    access_token = create_access_token(
-        data={"sub": str(user.id)}, expires_delta=access_token_expires
-    )
-
-    # Устанавливаем токен в куки
-    response.set_cookie(
-        key="access_token",
-        value=access_token,
-        httponly=True,
-        max_age=1800,
-        expires=1800,
-    )
-
-    # Перенаправляем на быстрый старт
-    from fastapi.responses import RedirectResponse
-    return RedirectResponse(url="/quick-start", status_code=303)
-
-
 @router.post("/login", response_class=RedirectResponse)
 async def login(
         response: Response,

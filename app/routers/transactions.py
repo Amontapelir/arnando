@@ -72,7 +72,7 @@ async def new_transaction_form(
     properties = await crud.get_user_properties(db, current_user.id)
 
     return templates.TemplateResponse(
-        "transactions/new.html",
+        "transactions/form.html",
         {
             "request": request,
             "user": current_user,
@@ -121,7 +121,7 @@ async def create_transaction(
     except Exception as e:
         properties = await crud.get_user_properties(db, current_user.id)
         return templates.TemplateResponse(
-            "transactions/new.html",
+            "transactions/form.html",
             {
                 "request": request,
                 "user": current_user,

@@ -1,17 +1,19 @@
+import logging
+
 from fastapi import FastAPI, Request, Depends
 from fastapi.responses import HTMLResponse, RedirectResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
-from sqlalchemy.ext.asyncio import AsyncSession
 from contextlib import asynccontextmanager
-import os
-from typing import Optional
 
+from app.config import settings
 from app.database import engine, Base
 from app.routers import auth, properties, bookings, transactions, taxes, reports, dashboard
-from app.dependencies import get_current_user, get_current_user_optional
+from app.dependencies import get_current_user
 from app.models import User
 from app.templates import templates
 from starlette.exceptions import HTTPException as StarletteHTTPException
+
+logger = logging.getLogger(__name__)
 
 
 # Создание таблиц при старте
@@ -44,10 +46,11 @@ async def http_exception_handler(request, exc):
 
 @app.exception_handler(Exception)
 async def general_exception_handler(request, exc):
-    return JSONResponse(
-        status_code=500,
-        content={"detail": "Internal server error", "error": str(exc)},
-    )
+    logger.exception("Unhandled error on %s %s", request.method, request.url.path)
+    content = {"detail": "Internal server error"}
+    if settings.debug:
+        content["error"] = str(exc)
+    return JSONResponse(status_code=500, content=content)
 
 
 # Подключаем статические файлы
@@ -82,9 +85,8 @@ async def root(request: Request):
                     user = await get_user(db, user_id=token_data.user_id)
                     if user:
                         return RedirectResponse(url="/dashboard")
-        except Exception as e:
-            print(f"Error checking token: {e}")
-            pass
+        except Exception:
+            logger.exception("Error checking token on /")
 
     return templates.TemplateResponse(
         "home.html",
@@ -123,33 +125,9 @@ async def register_page(request: Request):
     )
 
 
-# Защищённые страницы
-@app.get("/dashboard", response_class=HTMLResponse)
-async def dashboard_page(
-        request: Request,
-        current_user: User = Depends(get_current_user)
-):
-    return templates.TemplateResponse(
-        "dashboard/index.html",
-        {
-            "request": request,
-            "user": current_user
-        }
-    )
-
-
-@app.get("/properties", response_class=HTMLResponse)
-async def properties_page(
-        request: Request,
-        current_user: User = Depends(get_current_user)
-):
-    return templates.TemplateResponse(
-        "properties/list.html",
-        {
-            "request": request,
-            "user": current_user
-        }
-    )
+# /dashboard и /properties обслуживаются роутерами dashboard.router и
+# properties.router (зарегистрированы выше с полноценным набором данных
+# и обязательной авторизацией) — дублирующих маршрутов здесь больше нет.
 
 
 # Health check

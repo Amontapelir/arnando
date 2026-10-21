@@ -18,12 +18,14 @@ async def reports_dashboard(
         request: Request,
         current_user: models.User = Depends(get_current_active_user)
 ):
+    today = date.today()
     return templates.TemplateResponse(
         "reports/index.html",
         {
             "request": request,
             "user": current_user,
-            "current_year": date.today().year
+            "current_year": today.year,
+            "today": today
         }
     )
 

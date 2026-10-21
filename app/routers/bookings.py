@@ -81,7 +81,7 @@ async def new_booking_form(
     properties = await crud.get_user_properties(db, current_user.id)
 
     return templates.TemplateResponse(
-        "bookings/new.html",
+        "bookings/form.html",
         {
             "request": request,
             "user": current_user,
@@ -124,7 +124,7 @@ async def create_booking(
     except ValueError as e:
         properties = await crud.get_user_properties(db, current_user.id)
         return templates.TemplateResponse(
-            "bookings/new.html",
+            "bookings/form.html",
             {
                 "request": request,
                 "user": current_user,

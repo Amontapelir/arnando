@@ -51,7 +51,8 @@ async def tax_calculator(
             "tax_calculation": tax_calculation,
             "tax_deadlines": tax_deadlines,
             "selected_year": year,
-            "current_year": today.year
+            "current_year": today.year,
+            "today": today
         }
     )
 

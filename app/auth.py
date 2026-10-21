@@ -1,14 +1,10 @@
 from datetime import datetime, timedelta
 from typing import Optional
 from jose import JWTError, jwt
-from passlib.context import CryptContext
-from fastapi import HTTPException, status
 from app.config import settings
 from app.schemas import TokenData
 import bcrypt
 
-# Используем bcrypt напрямую вместо passlib
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 def verify_password(plain_password: str, hashed_password: str) -> bool:
     try:
