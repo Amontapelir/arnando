@@ -10,6 +10,10 @@
                     <p class="text-muted mb-0">Создайте аккаунт для учёта аренды</p>
                 </div>
                 <div class="card-body">
+                    {% if error %}
+                    <div class="alert alert-danger">{{ error }}</div>
+                    {% endif %}
+
                     <form method="post" action="/auth/register">
                         <div class="mb-3">
                             <label for="email" class="form-label">Email *</label>
