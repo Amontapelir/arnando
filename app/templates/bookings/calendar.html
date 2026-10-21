@@ -1,0 +1,181 @@
+{% extends "base.html" %}
+
+{% block extra_css %}
+<style>
+    .calendar-grid {
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        gap: 1px;
+        background-color: #dee2e6;
+        border: 1px solid #dee2e6;
+    }
+    .calendar-day {
+        background-color: white;
+        min-height: 120px;
+        padding: 5px;
+        position: relative;
+    }
+    .calendar-day-header {
+        background-color: #f8f9fa;
+        padding: 10px;
+        text-align: center;
+        font-weight: bold;
+    }
+    .calendar-day.today {
+        background-color: #e7f1ff;
+    }
+    .calendar-day.other-month {
+        background-color: #f8f9fa;
+        color: #6c757d;
+    }
+    .booking-event {
+        background-color: #0d6efd;
+        color: white;
+        padding: 2px 5px;
+        margin: 2px 0;
+        border-radius: 3px;
+        font-size: 0.8rem;
+        cursor: pointer;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+    .booking-event.unofficial {
+        background-color: #6c757d;
+    }
+    .day-number {
+        font-weight: bold;
+        margin-bottom: 5px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1>Календарь бронирований</h1>
+            <h4 class="text-muted">{{ current_month|month_name }} {{ current_year }}</h4>
+        </div>
+        <div>
+            <a href="/bookings/new" class="btn btn-primary">
+                <i class="bi bi-calendar-plus"></i> Новое бронирование
+            </a>
+        </div>
+    </div>
+
+    <!-- Фильтры -->
+    <div class="card mb-4">
+        <div class="card-body">
+            <form method="get" class="row g-3">
+                <div class="col-md-4">
+                    <label for="property_id" class="form-label">Объект</label>
+                    <select id="property_id" name="property_id" class="form-select">
+                        <option value="">Все объекты</option>
+                        {% for prop in properties %}
+                        <option value="{{ prop.id }}" {% if selected_property_id == prop.id %}selected{% endif %}>
+                            {{ prop.name }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label for="month" class="form-label">Месяц</label>
+                    <select id="month" name="month" class="form-select">
+                        {% for m in range(1, 13) %}
+                        <option value="{{ m }}" {% if current_month == m %}selected{% endif %}>
+                            {{ m|month_name }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label for="year" class="form-label">Год</label>
+                    <input type="number" id="year" name="year" class="form-control"
+                           value="{{ current_year }}" min="2020" max="2030">
+                </div>
+                <div class="col-md-2 d-flex align-items-end">
+                    <button type="submit" class="btn btn-primary w-100">Показать</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Календарь -->
+    <div class="card">
+        <div class="card-body">
+            <!-- Дни недели -->
+            <div class="calendar-grid mb-1">
+                {% for day in ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс'] %}
+                <div class="calendar-day-header">{{ day }}</div>
+                {% endfor %}
+            </div>
+
+            <!-- Дни месяца -->
+            <div class="calendar-grid">
+                {% for week in range(1, 6) %}
+                    {% for day in range(1, 8) %}
+                        {% set day_num = (week-1)*7 + day %}
+                        {% set day_date = date(current_year, current_month, day_num) if day_num <= days_in_month else None %}
+
+                        <div class="calendar-day {% if day_date and day_date == today %}today{% endif %}
+                                             {% if not day_date or day_date.month != current_month %}other-month{% endif %}">
+
+                            {% if day_date and day_date.month == current_month %}
+                                <div class="day-number">{{ day_date.day }}</div>
+
+                                <!-- Бронирования на этот день -->
+                                {% for booking in bookings %}
+                                    {% if day_date >= booking.check_in and day_date <= booking.check_out %}
+                                        {% set is_start = day_date == booking.check_in %}
+                                        {% set is_end = day_date == booking.check_out %}
+
+                                        <div class="booking-event {% if booking.official_amount < booking.total_amount %}unofficial{% endif %}"
+                                             title="{{ booking.guest_name }} - {{ booking.total_amount }} ₽">
+                                            {% if is_start %}
+                                                {{ booking.guest_name[:15] }}{% if booking.guest_name|length > 15 %}...{% endif %}
+                                            {% endif %}
+                                        </div>
+                                    {% endif %}
+                                {% endfor %}
+                            {% endif %}
+                        </div>
+                    {% endfor %}
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Легенда -->
+    <div class="mt-3">
+        <span class="badge bg-primary me-2">Официальное бронирование</span>
+        <span class="badge bg-secondary">Частично неофициальное</span>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Добавляем фильтры Jinja2 для работы с датами
+    function monthName(month) {
+        const months = [
+            'Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь',
+            'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'
+        ];
+        return months[month - 1] || '';
+    }
+
+    function daysInMonth(year, month) {
+        return new Date(year, month, 0).getDate();
+    }
+
+    // Инициализация
+    document.addEventListener('DOMContentLoaded', function() {
+        // Добавляем фильтры в глобальный объект
+        window.filters = {
+            monthName: monthName,
+            daysInMonth: daysInMonth
+        };
+    });
+</script>
+{% endblock %}

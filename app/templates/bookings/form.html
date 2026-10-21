@@ -1,0 +1,197 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h4>{% if booking %}Редактировать бронирование{% else %}Новое бронирование{% endif %}</h4>
+                </div>
+                <div class="card-body">
+                    {% if error %}
+                    <div class="alert alert-danger">
+                        {{ error }}
+                    </div>
+                    {% endif %}
+
+                    <form method="post" action="{% if booking %}/bookings/{{ booking.id }}{% else %}/bookings{% endif %}">
+                        <div class="mb-3">
+                            <label for="property_id" class="form-label">Объект *</label>
+                            <select id="property_id" name="property_id" class="form-select" required>
+                                <option value="">Выберите объект</option>
+                                {% for prop in properties %}
+                                <option value="{{ prop.id }}"
+                                        {% if (booking and booking.property_id == prop.id) or (not booking and selected_property_id == prop.id) %}selected{% endif %}
+                                        data-price="{{ prop.base_price }}">
+                                    {{ prop.name }} ({{ prop.base_price }} ₽/сутки)
+                                </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="check_in" class="form-label">Дата заезда *</label>
+                                <input type="date" id="check_in" name="check_in"
+                                       class="form-control" required
+                                       value="{{ booking.check_in if booking else today }}"
+                                       min="{{ today }}">
+                            </div>
+                            <div class="col-md-6">
+                                <label for="check_out" class="form-label">Дата выезда *</label>
+                                <input type="date" id="check_out" name="check_out"
+                                       class="form-control" required
+                                       value="{{ booking.check_out if booking else '' }}"
+                                       min="{{ today }}">
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="guest_name" class="form-label">Имя гостя *</label>
+                                <input type="text" id="guest_name" name="guest_name"
+                                       class="form-control" required
+                                       value="{{ booking.guest_name if booking else '' }}">
+                            </div>
+                            <div class="col-md-6">
+                                <label for="guest_contact" class="form-label">Контакт гостя</label>
+                                <input type="text" id="guest_contact" name="guest_contact"
+                                       class="form-control"
+                                       placeholder="Телефон или email"
+                                       value="{{ booking.guest_contact if booking else '' }}">
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="total_amount" class="form-label">Общая сумма (₽) *</label>
+                                <input type="number" id="total_amount" name="total_amount"
+                                       class="form-control" step="0.01" required
+                                       placeholder="Фактическая сумма оплаты"
+                                       value="{{ booking.total_amount if booking else '' }}">
+                                <div class="form-text">Фактическая сумма, полученная от гостя</div>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="official_amount" class="form-label">Официальная сумма (₽) *</label>
+                                <input type="number" id="official_amount" name="official_amount"
+                                       class="form-control" step="0.01" required
+                                       placeholder="Сумма для налогов"
+                                       value="{{ booking.official_amount if booking else '' }}">
+                                <div class="form-text">Сумма, которая будет учитываться в налогах</div>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <div class="alert alert-info">
+                                <div class="row">
+                                    <div class="col">
+                                        <strong>Неофициальная часть:</strong>
+                                        <span id="unofficial_amount_display">
+                                            {{ (booking.total_amount - booking.official_amount) if booking else 0 }}
+                                        </span> ₽
+                                    </div>
+                                    <div class="col">
+                                        <strong>Процент неофициальной части:</strong>
+                                        <span id="unofficial_percent_display">
+                                            {% if booking %}
+                                                {{ ((booking.total_amount - booking.official_amount) / booking.total_amount * 100) if booking.total_amount else 0 }}
+                                            {% else %}
+                                                0
+                                            {% endif %}
+                                        </span>%
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="status" class="form-label">Статус</label>
+                            <select id="status" name="status" class="form-select">
+                                <option value="confirmed" {% if booking and booking.status == 'confirmed' %}selected{% endif %}>Подтверждено</option>
+                                <option value="pending" {% if booking and booking.status == 'pending' %}selected{% endif %}>Ожидание</option>
+                                <option value="cancelled" {% if booking and booking.status == 'cancelled' %}selected{% endif %}>Отменено</option>
+                                <option value="completed" {% if booking and booking.status == 'completed' %}selected{% endif %}>Завершено</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="notes" class="form-label">Примечания</label>
+                            <textarea id="notes" name="notes" class="form-control" rows="3">{{ booking.notes if booking else '' }}</textarea>
+                        </div>
+
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                            <a href="/bookings/calendar" class="btn btn-secondary me-md-2">Отмена</a>
+                            <button type="submit" class="btn btn-primary">
+                                {% if booking %}Сохранить{% else %}Создать бронирование{% endif %}
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const totalInput = document.getElementById('total_amount');
+    const officialInput = document.getElementById('official_amount');
+    const unofficialDisplay = document.getElementById('unofficial_amount_display');
+    const percentDisplay = document.getElementById('unofficial_percent_display');
+
+    function updateUnofficialAmount() {
+        const total = parseFloat(totalInput.value) || 0;
+        const official = parseFloat(officialInput.value) || 0;
+
+        if (official > total) {
+            officialInput.setCustomValidity('Официальная сумма не может превышать общую сумму');
+            unofficialDisplay.textContent = '0';
+            percentDisplay.textContent = '0%';
+        } else {
+            officialInput.setCustomValidity('');
+            const unofficial = total - official;
+            const percent = total > 0 ? ((unofficial / total) * 100).toFixed(1) : 0;
+
+            unofficialDisplay.textContent = unofficial.toFixed(2);
+            percentDisplay.textContent = percent + '%';
+        }
+    }
+
+    totalInput.addEventListener('input', updateUnofficialAmount);
+    officialInput.addEventListener('input', updateUnofficialAmount);
+
+    // Автоматический расчет суммы по количеству дней и цене объекта
+    const propertySelect = document.getElementById('property_id');
+    const checkInInput = document.getElementById('check_in');
+    const checkOutInput = document.getElementById('check_out');
+
+    function calculateAmount() {
+        const propertyOption = propertySelect.options[propertySelect.selectedIndex];
+        const basePrice = parseFloat(propertyOption.dataset.price) || 0;
+        const checkIn = new Date(checkInInput.value);
+        const checkOut = new Date(checkOutInput.value);
+
+        if (basePrice && checkIn && checkOut && checkOut > checkIn) {
+            const days = Math.ceil((checkOut - checkIn) / (1000 * 60 * 60 * 24));
+            const amount = days * basePrice;
+
+            if (!totalInput.value || (booking && booking.total_amount)) {
+                totalInput.value = amount.toFixed(2);
+                officialInput.value = amount.toFixed(2);
+                updateUnofficialAmount();
+            }
+        }
+    }
+
+    propertySelect.addEventListener('change', calculateAmount);
+    checkInInput.addEventListener('change', calculateAmount);
+    checkOutInput.addEventListener('change', calculateAmount);
+
+    // Инициализация
+    updateUnofficialAmount();
+});
+</script>
+{% endblock %}

@@ -1,0 +1,61 @@
+<!-- app/templates/help.html -->
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container py-5">
+    <h1 class="mb-4">📚 Справка по RentLedger</h1>
+
+    <div class="row">
+        <div class="col-md-4">
+            <div class="list-group mb-4">
+                <a href="#accounting" class="list-group-item list-group-item-action">Раздельный учёт</a>
+                <a href="#bookings" class="list-group-item list-group-item-action">Бронирования</a>
+                <a href="#taxes" class="list-group-item list-group-item-action">Налоги</a>
+                <a href="#reports" class="list-group-item list-group-item-action">Отчёты</a>
+            </div>
+        </div>
+
+        <div class="col-md-8">
+            <div id="accounting" class="mb-5">
+                <h4>Раздельный учёт доходов и расходов</h4>
+                <p>Система поддерживает параллельный учёт "белой" и "чёрной" бухгалтерии.</p>
+
+                <div class="row mt-4">
+                    <div class="col-md-6">
+                        <div class="card h-100">
+                            <div class="card-header bg-success text-white">
+                                Белая бухгалтерия
+                            </div>
+                            <div class="card-body">
+                                <ul>
+                                    <li>Суммы для налоговой отчётности</li>
+                                    <li>Документально подтверждённые операции</li>
+                                    <li>Влияет на размер уплачиваемых налогов</li>
+                                    <li>Рекомендуется для основной части дохода</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card h-100">
+                            <div class="card-header bg-secondary text-white">
+                                Чёрная бухгалтерия
+                            </div>
+                            <div class="card-body">
+                                <ul>
+                                    <li>Реальные суммы операций</li>
+                                    <li>Для внутреннего учёта</li>
+                                    <li>Не отображается в налоговой отчётности</li>
+                                    <li>Помогает видеть реальную картину</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Остальные разделы справки -->
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,239 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Дашборд</h1>
+        <div>
+            <span class="badge bg-primary">{{ user.tax_mode.value|tax_mode_display }}</span>
+        </div>
+    </div>
+
+    <!-- Краткая статистика - обновленные нейтральные карточки -->
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="stat-card">
+                <div class="card-body p-3">
+                    <h6 class="card-title text-muted mb-2">Доходы за месяц</h6>
+                    <h3 class="mb-2 text-primary">{{ "%.2f"|format(month_summary.total_income) }} ₽</h3>
+                    <small class="text-muted">
+                        <span class="badge bg-light text-dark">Офиц.: {{ "%.2f"|format(month_summary.official_income) }} ₽</span>
+                    </small>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="stat-card">
+                <div class="card-body p-3">
+                    <h6 class="card-title text-muted mb-2">Прибыль за месяц</h6>
+                    <h3 class="mb-2 text-success">{{ "%.2f"|format(month_summary.profit) }} ₽</h3>
+                    <small class="text-muted">
+                        <span class="badge bg-light text-dark">Налоговая база: {{ "%.2f"|format(month_summary.official_income) }} ₽</span>
+                    </small>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="stat-card">
+                <div class="card-body p-3">
+                    <h6 class="card-title text-muted mb-2">Объекты</h6>
+                    <h3 class="mb-2 text-primary">{{ properties|length }}</h3>
+                    <small class="text-muted">
+                        <span class="badge bg-light text-dark">
+                            {{ properties|selectattr('is_active', 'equalto', True)|list|length }} активных
+                        </span>
+                    </small>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="stat-card">
+                <div class="card-body p-3">
+                    <h6 class="card-title text-muted mb-2">Ближайшие брони</h6>
+                    <h3 class="mb-2 text-primary">{{ bookings|length }}</h3>
+                    <small class="text-muted">
+                        <span class="badge bg-light text-dark">В ближайшие 30 дней</span>
+                    </small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Остальная часть шаблона остается без изменений -->
+    <div class="row">
+        <!-- Ближайшие бронирования -->
+        <div class="col-md-8">
+            <div class="card mb-4">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">Ближайшие бронирования</h5>
+                    <a href="/bookings/calendar" class="btn btn-sm btn-outline-primary">
+                        <i class="bi bi-calendar-week"></i> Весь календарь
+                    </a>
+                </div>
+                <div class="card-body">
+                    {% if bookings %}
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Объект</th>
+                                    <th>Гость</th>
+                                    <th>Даты</th>
+                                    <th>Сумма</th>
+                                    <th>Статус</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for booking in bookings %}
+                                <tr>
+                                    <td>
+                                        {% if booking.property %}
+                                        {{ booking.property.name }}
+                                        {% else %}
+                                        <span class="text-muted">—</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>{{ booking.guest_name }}</td>
+                                    <td>
+                                        {{ booking.check_in.strftime('%d.%m') }} - {{ booking.check_out.strftime('%d.%m') }}
+                                        <br>
+                                        <small class="text-muted">{{ ((booking.check_out - booking.check_in).days) }} дней</small>
+                                    </td>
+                                    <td>
+                                        <strong>{{ "%.2f"|format(booking.total_amount) }} ₽</strong>
+                                        <br>
+                                        <small class="text-{% if booking.official_amount < booking.total_amount %}warning{% else %}success{% endif %}">
+                                            {{ "%.2f"|format(booking.official_amount) }} ₽ офиц.
+                                        </small>
+                                    </td>
+                                    <td>
+                                        <span class="badge bg-{% if booking.status == 'confirmed' %}success{% else %}warning{% endif %}">
+                                            {{ booking.status }}
+                                        </span>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                    <p class="text-muted">Нет предстоящих бронирований</p>
+                    <a href="/bookings/new" class="btn btn-primary">
+                        <i class="bi bi-calendar-plus"></i> Создать первое бронирование
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Быстрые действия -->
+        <div class="col-md-4">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0">Быстрые действия</h5>
+                </div>
+                <div class="card-body">
+                    <div class="d-grid gap-2">
+                        <a href="/bookings/new" class="btn btn-primary">
+                            <i class="bi bi-calendar-plus"></i> Новое бронирование
+                        </a>
+                        <a href="/properties/new" class="btn btn-outline-primary">
+                            <i class="bi bi-house-add"></i> Добавить объект
+                        </a>
+                        <a href="/transactions/new?transaction_type=income" class="btn btn-success">
+                            <i class="bi bi-plus-circle"></i> Внести доход
+                        </a>
+                        <a href="/transactions/new?transaction_type=expense" class="btn btn-outline-danger">
+                            <i class="bi bi-dash-circle"></i> Внести расход
+                        </a>
+                        <a href="/taxes/calculator" class="btn btn-warning">
+                            <i class="bi bi-calculator"></i> Рассчитать налоги
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Мои объекты -->
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">Мои объекты</h5>
+                </div>
+                <div class="card-body">
+                    {% if properties %}
+                    <div class="list-group list-group-flush">
+                        {% for property in properties[:3] %}
+                        <a href="/properties/{{ property.id }}" class="list-group-item list-group-item-action">
+                            <div class="d-flex w-100 justify-content-between">
+                                <h6 class="mb-1">{{ property.name }}</h6>
+                                <small>{{ property.base_price }} ₽/сутки</small>
+                            </div>
+                            <small class="text-muted">
+                                {{ property.property_type|default('Квартира') }}
+                                {% if property.address %}
+                                · {{ property.address }}
+                                {% endif %}
+                            </small>
+                        </a>
+                        {% endfor %}
+                    </div>
+                    {% if properties|length > 3 %}
+                    <div class="text-center mt-2">
+                        <a href="/properties" class="btn btn-sm btn-outline-secondary">
+                            Показать все ({{ properties|length }})
+                        </a>
+                    </div>
+                    {% endif %}
+                    {% else %}
+                    <p class="text-muted">Нет добавленных объектов</p>
+                    <a href="/properties/new" class="btn btn-sm btn-primary">
+                        Добавить первый объект
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Сравнение с прошлым месяцем -->
+    <div class="card mt-4">
+        <div class="card-header">
+            <h5 class="mb-0">Сравнение с прошлым месяцем</h5>
+        </div>
+        <div class="card-body">
+            <div class="row text-center">
+                <div class="col-md-3">
+                    <h6 class="text-muted">Доходы</h6>
+                    <h4 class="text-success">{{ "%.2f"|format(month_summary.total_income) }} ₽</h4>
+                    <small class="text-muted">
+                        Прошлый месяц: {{ "%.2f"|format(prev_month_summary.total_income) }} ₽
+                    </small>
+                </div>
+                <div class="col-md-3">
+                    <h6 class="text-muted">Расходы</h6>
+                    <h4 class="text-danger">{{ "%.2f"|format(month_summary.total_expenses) }} ₽</h4>
+                    <small class="text-muted">
+                        Прошлый месяц: {{ "%.2f"|format(prev_month_summary.total_expenses) }} ₽
+                    </small>
+                </div>
+                <div class="col-md-3">
+                    <h6 class="text-muted">Прибыль</h6>
+                    <h4 class="text-primary">{{ "%.2f"|format(month_summary.profit) }} ₽</h4>
+                    <small class="text-muted">
+                        Прошлый месяц: {{ "%.2f"|format(prev_month_summary.profit) }} ₽
+                    </small>
+                </div>
+                <div class="col-md-3">
+                    <h6 class="text-muted">Налоговая база</h6>
+                    <h4 class="text-warning">{{ "%.2f"|format(month_summary.official_income) }} ₽</h4>
+                    <small class="text-muted">
+                        Прошлый месяц: {{ "%.2f"|format(prev_month_summary.official_income) }} ₽
+                    </small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Мои объекты</h1>
+        <a href="/properties/new" class="btn btn-primary">
+            <i class="bi bi-plus-circle"></i> Добавить объект
+        </a>
+    </div>
+
+    {% if not properties %}
+    <div class="alert alert-info">
+        У вас пока нет объектов. Добавьте первый объект для начала работы.
+    </div>
+    {% else %}
+    <div class="row">
+        {% for property in properties %}
+        <div class="col-md-4 mb-4">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h5 class="card-title">{{ property.name }}</h5>
+                    <h6 class="card-subtitle mb-2 text-muted">
+                        {{ property.property_type|default('Квартира') }}
+                    </h6>
+                    <p class="card-text">
+                        <i class="bi bi-geo-alt"></i> {{ property.address|default('Адрес не указан') }}
+                    </p>
+                    <p class="card-text">
+                        <strong>{{ property.base_price }} ₽/сутки</strong>
+                    </p>
+                </div>
+                <div class="card-footer">
+                    <a href="/properties/{{ property.id }}" class="btn btn-outline-primary btn-sm">
+                        <i class="bi bi-eye"></i> Подробнее
+                    </a>
+                    <a href="/bookings/new?property_id={{ property.id }}" class="btn btn-success btn-sm">
+                        <i class="bi bi-calendar-plus"></i> Добавить бронь
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

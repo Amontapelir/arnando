@@ -1,0 +1,17 @@
+.venv/
+venv/
+env/
+__pycache__/
+*.pyc
+
+.env
+.env.*
+!.env.example
+
+*.db
+*.sqlite3
+
+.idea/
+.vs/
+
+rentledger/

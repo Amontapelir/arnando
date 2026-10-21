@@ -1,0 +1,128 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1 class="mb-4">Отчёты</h1>
+
+    <div class="row">
+        <!-- Финансовый отчет -->
+        <div class="col-md-6 mb-4">
+            <div class="card h-100">
+                <div class="card-header">
+                    <h5 class="mb-0">Финансовый отчёт</h5>
+                </div>
+                <div class="card-body">
+                    <p class="card-text">
+                        Экспорт всех финансовых операций за выбранный период в формате CSV.
+                    </p>
+
+                    <form method="get" action="/reports/export-financial" class="row g-3">
+                        <div class="col-md-6">
+                            <label for="start_date" class="form-label">Начало периода</label>
+                            <input type="date" id="start_date" name="start_date"
+                                   class="form-control" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="end_date" class="form-label">Конец периода</label>
+                            <input type="date" id="end_date" name="end_date"
+                                   class="form-control" required>
+                        </div>
+                        <div class="col-12">
+                            <button type="submit" class="btn btn-primary w-100">
+                                <i class="bi bi-download"></i> Экспортировать в CSV
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Налоговый отчет -->
+        <div class="col-md-6 mb-4">
+            <div class="card h-100">
+                <div class="card-header">
+                    <h5 class="mb-0">Налоговый отчёт</h5>
+                </div>
+                <div class="card-body">
+                    <p class="card-text">
+                        Годовой налоговый отчёт с разбивкой по доходам и расходам.
+                    </p>
+
+                    <form method="get" action="/reports/export-tax" class="row g-3">
+                        <div class="col-md-8">
+                            <label for="year" class="form-label">Год</label>
+                            <select id="year" name="year" class="form-select" required>
+                                {% for y in range(current_year-2, current_year+1) %}
+                                <option value="{{ y }}" {% if y == current_year %}selected{% endif %}>
+                                    {{ y }}
+                                </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-md-4 d-flex align-items-end">
+                            <button type="submit" class="btn btn-primary w-100">
+                                <i class="bi bi-download"></i> Экспорт
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Полезная информация -->
+    <div class="card mt-4">
+        <div class="card-header">
+            <h5 class="mb-0">Полезная информация для отчётности</h5>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-4">
+                    <h6>Для самозанятых:</h6>
+                    <ul class="small">
+                        <li>Лимит доходов: 2.4 млн ₽ в год</li>
+                        <li>Ставка: 4% (с физлиц), 6% (с ИП/юрлиц)</li>
+                        <li>Налог платится до 25-го числа следующего месяца</li>
+                    </ul>
+                </div>
+                <div class="col-md-4">
+                    <h6>Для УСН "Доходы":</h6>
+                    <ul class="small">
+                        <li>Ставка: 6% от доходов</li>
+                        <li>Авансовые платежи: до 25-го числа месяца после квартала</li>
+                        <li>Годовой налог: до 31 марта следующего года</li>
+                    </ul>
+                </div>
+                <div class="col-md-4">
+                    <h6>Для УСН "Доходы-Расходы":</h6>
+                    <ul class="small">
+                        <li>Ставка: 15% от разницы доходов и расходов</li>
+                        <li>Минимальный налог: 1% от доходов</li>
+                        <li>Расходы должны быть документально подтверждены</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="alert alert-warning mt-3">
+                <i class="bi bi-exclamation-triangle"></i>
+                <strong>Важно:</strong> Данные отчёты предназначены для внутреннего использования.
+                Для налоговой отчётности рекомендуется консультация с профессиональным бухгалтером.
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Устанавливаем даты по умолчанию для финансового отчета
+    const today = new Date();
+    const firstDay = new Date(today.getFullYear(), today.getMonth(), 1);
+    const lastDay = new Date(today.getFullYear(), today.getMonth() + 1, 0);
+
+    document.getElementById('start_date').valueAsDate = firstDay;
+    document.getElementById('end_date').valueAsDate = lastDay;
+});
+</script>
+{% endblock %}

@@ -1,0 +1,157 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-10">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="mb-0">🚀 Быстрый старт в RentLedger</h4>
+                </div>
+                <div class="card-body">
+                    <p class="lead mb-4">За 5 шагов настройте систему для эффективной работы с арендой:</p>
+
+                    <div class="steps">
+                        <!-- Шаг 1 -->
+                        <div class="step-card mb-4">
+                            <div class="d-flex align-items-start">
+                                <div class="step-number me-3">
+                                    <span class="badge bg-primary rounded-circle" style="width: 40px; height: 40px; line-height: 40px; font-size: 1.2rem;">1</span>
+                                </div>
+                                <div class="flex-grow-1">
+                                    <h5>Добавьте первый объект</h5>
+                                    <p class="text-muted">Начните с основного объекта недвижимости. Укажите реальную информацию.</p>
+                                    <div class="mt-3">
+                                        <a href="/properties/new" class="btn btn-primary">
+                                            <i class="bi bi-plus-circle me-2"></i> Добавить объект
+                                        </a>
+                                        <small class="text-muted ms-3">Рекомендуем: "Квартира в центре", "Загородный дом"</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Шаг 2 -->
+                        <div class="step-card mb-4">
+                            <div class="d-flex align-items-start">
+                                <div class="step-number me-3">
+                                    <span class="badge bg-primary rounded-circle" style="width: 40px; height: 40px; line-height: 40px; font-size: 1.2rem;">2</span>
+                                </div>
+                                <div class="flex-grow-1">
+                                    <h5>Разберитесь с раздельным учётом</h5>
+                                    <div class="accounting-explanation mb-3">
+                                        <p><strong>Как это работает:</strong></p>
+                                        <ul class="mb-0">
+                                            <li><span class="accounting-term white">Белая сумма</span> — для налоговой отчётности</li>
+                                            <li><span class="accounting-term black">Чёрная сумма</span> — реальный доход/расход</li>
+                                            <li>Разница между ними — неофициальная часть</li>
+                                        </ul>
+                                    </div>
+                                    <div class="example-card p-3 bg-light rounded mb-3">
+                                        <p class="mb-2"><strong>Пример:</strong></p>
+                                        <div class="d-flex justify-content-between">
+                                            <span>Получили от гостя:</span>
+                                            <strong>25 000 ₽</strong>
+                                        </div>
+                                        <div class="d-flex justify-content-between">
+                                            <span class="accounting-term white">Показываем налоговой:</span>
+                                            <strong class="text-success">15 000 ₽</strong>
+                                        </div>
+                                        <div class="d-flex justify-content-between">
+                                            <span class="accounting-term black">Не показываем:</span>
+                                            <strong class="text-secondary">10 000 ₽</strong>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Шаг 3 -->
+                        <div class="step-card mb-4">
+                            <div class="d-flex align-items-start">
+                                <div class="step-number me-3">
+                                    <span class="badge bg-primary rounded-circle" style="width: 40px; height: 40px; line-height: 40px; font-size: 1.2rem;">3</span>
+                                </div>
+                                <div class="flex-grow-1">
+                                    <h5>Создайте тестовое бронирование</h5>
+                                    <p class="text-muted">Попробуйте добавить бронирование, чтобы понять как работает система.</p>
+                                    <div class="mt-3">
+                                        <a href="/bookings/new" class="btn btn-outline-primary">
+                                            <i class="bi bi-calendar-plus me-2"></i> Добавить бронирование
+                                        </a>
+                                        <small class="text-muted ms-3">Используйте тестовые данные для обучения</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Шаг 4 -->
+                        <div class="step-card mb-4">
+                            <div class="d-flex align-items-start">
+                                <div class="step-number me-3">
+                                    <span class="badge bg-primary rounded-circle" style="width: 40px; height: 40px; line-height: 40px; font-size: 1.2rem;">4</span>
+                                </div>
+                                <div class="flex-grow-1">
+                                    <h5>Проверьте календарь</h5>
+                                    <p class="text-muted">Убедитесь, что бронирование отображается в календаре.</p>
+                                    <div class="mt-3">
+                                        <a href="/bookings/calendar" class="btn btn-outline-primary">
+                                            <i class="bi bi-calendar-week me-2"></i> Открыть календарь
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Шаг 5 -->
+                        <div class="step-card mb-4">
+                            <div class="d-flex align-items-start">
+                                <div class="step-number me-3">
+                                    <span class="badge bg-primary rounded-circle" style="width: 40px; height: 40px; line-height: 40px; font-size: 1.2rem;">5</span>
+                                </div>
+                                <div class="flex-grow-1">
+                                    <h5>Настройте налоговый режим</h5>
+                                    <p class="text-muted">Выберите подходящий режим налогообложения в настройках профиля.</p>
+                                    <div class="mt-3">
+                                        <a href="/taxes/calculator" class="btn btn-outline-primary">
+                                            <i class="bi bi-calculator me-2"></i> Налоговый калькулятор
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="text-center mt-5">
+                        <a href="/dashboard" class="btn btn-primary btn-lg px-5">
+                            <i class="bi bi-rocket-takeoff me-2"></i> Начать работу
+                        </a>
+                        <p class="text-muted mt-3">Можете вернуться к этому руководству в любое время через меню профиля</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+.step-card {
+    padding: 20px;
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    background: var(--card-bg);
+    transition: var(--transition);
+}
+
+.step-card:hover {
+    border-color: var(--primary-color);
+    transform: translateX(5px);
+}
+
+.example-card {
+    background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+}
+</style>
+{% endblock %}

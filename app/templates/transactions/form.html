@@ -1,0 +1,186 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h4>
+                        {% if transaction and transaction.transaction_type.value == 'income' %}
+                            Редактировать доход
+                        {% elif transaction and transaction.transaction_type.value == 'expense' %}
+                            Редактировать расход
+                        {% elif transaction_type == 'income' %}
+                            Новый доход
+                        {% else %}
+                            Новый расход
+                        {% endif %}
+                    </h4>
+                </div>
+                <div class="card-body">
+                    {% if error %}
+                    <div class="alert alert-danger">
+                        {{ error }}
+                    </div>
+                    {% endif %}
+
+                    <form method="post" action="{% if transaction %}/transactions/{{ transaction.id }}{% else %}/transactions{% endif %}">
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="transaction_type" class="form-label">Тип операции *</label>
+                                <select id="transaction_type" name="transaction_type" class="form-select" required
+                                        {% if transaction %}disabled{% endif %}>
+                                    <option value="income"
+                                            {% if (transaction and transaction.transaction_type.value == 'income') or transaction_type == 'income' %}selected{% endif %}>
+                                        Доход
+                                    </option>
+                                    <option value="expense"
+                                            {% if (transaction and transaction.transaction_type.value == 'expense') or transaction_type == 'expense' %}selected{% endif %}>
+                                        Расход
+                                    </option>
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="date" class="form-label">Дата *</label>
+                                <input type="date" id="date" name="date" class="form-control" required
+                                       value="{{ transaction.date if transaction else today }}">
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="property_id" class="form-label">Объект (необязательно)</label>
+                            <select id="property_id" name="property_id" class="form-select">
+                                <option value="">Не привязывать к объекту</option>
+                                {% for prop in properties %}
+                                <option value="{{ prop.id }}"
+                                        {% if transaction and transaction.property_id == prop.id %}selected{% endif %}>
+                                    {{ prop.name }}
+                                </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="category" class="form-label">Категория *</label>
+                                <select id="category" name="category" class="form-select" required>
+                                    {% if (transaction and transaction.transaction_type.value == 'income') or transaction_type == 'income' %}
+                                        <option value="аренда" {% if transaction and transaction.category == 'аренда' %}selected{% endif %}>Аренда</option>
+                                        <option value="залог" {% if transaction and transaction.category == 'залог' %}selected{% endif %}>Залог</option>
+                                        <option value="доп. услуги" {% if transaction and transaction.category == 'доп. услуги' %}selected{% endif %}>Доп. услуги</option>
+                                        <option value="прочие доходы" {% if transaction and transaction.category == 'прочие доходы' %}selected{% endif %}>Прочие доходы</option>
+                                    {% else %}
+                                        <option value="уборка" {% if transaction and transaction.category == 'уборка' %}selected{% endif %}>Уборка</option>
+                                        <option value="коммуналка" {% if transaction and transaction.category == 'коммуналка' %}selected{% endif %}>Коммуналка</option>
+                                        <option value="ремонт" {% if transaction and transaction.category == 'ремонт' %}selected{% endif %}>Ремонт</option>
+                                        <option value="закупки" {% if transaction and transaction.category == 'закупки' %}selected{% endif %}>Закупки</option>
+                                        <option value="налоги" {% if transaction and transaction.category == 'налоги' %}selected{% endif %}>Налоги</option>
+                                        <option value="прочие расходы" {% if transaction and transaction.category == 'прочие расходы' %}selected{% endif %}>Прочие расходы</option>
+                                    {% endif %}
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="amount" class="form-label">Сумма (₽) *</label>
+                                <input type="number" id="amount" name="amount" class="form-control"
+                                       step="0.01" required
+                                       value="{{ transaction.amount if transaction else '' }}">
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="description" class="form-label">Описание</label>
+                            <textarea id="description" name="description" class="form-control" rows="2">{{ transaction.description if transaction else '' }}</textarea>
+                        </div>
+
+                        <!-- Поля для раздельного учёта -->
+                        <div class="card mb-3">
+                            <div class="card-header bg-light">
+                                <h6 class="mb-0">Раздельный учёт</h6>
+                            </div>
+                            <div class="card-body">
+                                <div class="row mb-3">
+                                    <div class="col-md-6">
+                                        <label for="official_amount" class="form-label">Официальная сумма (₽) *</label>
+                                        <input type="number" id="official_amount" name="official_amount"
+                                               class="form-control" step="0.01" required
+                                               value="{{ transaction.official_amount if transaction else '' }}">
+                                        <div class="form-text">Сумма для налоговой отчётности</div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">Неофициальная часть</label>
+                                        <div class="form-control-plaintext">
+                                            <span id="unofficial_amount_display">0</span> ₽
+                                            <br>
+                                            <small class="text-muted" id="unofficial_percent_display">0% от суммы</small>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {% if (transaction and transaction.transaction_type.value == 'expense') or transaction_type == 'expense' %}
+                                <div class="mb-3">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox"
+                                               id="is_tax_deductible" name="is_tax_deductible"
+                                               {% if transaction and transaction.is_tax_deductible %}checked{% endif %}>
+                                        <label class="form-check-label" for="is_tax_deductible">
+                                            Это вычитаемый расход (для УСН "Доходы-расходы")
+                                        </label>
+                                        <div class="form-text">
+                                            Расходы, которые можно вычесть из налоговой базы.
+                                            Требуют документального подтверждения.
+                                        </div>
+                                    </div>
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                            <a href="/transactions" class="btn btn-secondary me-md-2">Отмена</a>
+                            <button type="submit" class="btn btn-primary">
+                                {% if transaction %}Сохранить{% else %}Добавить{% endif %}
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const amountInput = document.getElementById('amount');
+    const officialInput = document.getElementById('official_amount');
+    const unofficialDisplay = document.getElementById('unofficial_amount_display');
+    const percentDisplay = document.getElementById('unofficial_percent_display');
+
+    function updateUnofficialAmount() {
+        const total = parseFloat(amountInput.value) || 0;
+        const official = parseFloat(officialInput.value) || 0;
+
+        if (official > total) {
+            officialInput.setCustomValidity('Официальная сумма не может превышать общую сумму');
+            unofficialDisplay.textContent = '0';
+            percentDisplay.textContent = '0% от суммы';
+        } else {
+            officialInput.setCustomValidity('');
+            const unofficial = total - official;
+            const percent = total > 0 ? ((unofficial / total) * 100).toFixed(1) : 0;
+
+            unofficialDisplay.textContent = unofficial.toFixed(2);
+            percentDisplay.textContent = percent + '% от суммы';
+        }
+    }
+
+    amountInput.addEventListener('input', updateUnofficialAmount);
+    officialInput.addEventListener('input', updateUnofficialAmount);
+
+    // Инициализация
+    updateUnofficialAmount();
+});
+</script>
+{% endblock %}

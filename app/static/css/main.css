@@ -1,0 +1,69 @@
+/* Основные стили - современная версия */
+@import url('modern.css');
+
+/* Дополнительные кастомные стили */
+.hero-section {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: var(--border-radius);
+    padding: 60px;
+    color: white;
+    margin-bottom: 40px;
+    text-align: center;
+}
+
+.feature-icon {
+    font-size: 3rem;
+    background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    margin-bottom: 20px;
+}
+
+.progress-bar {
+    background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+    border-radius: 10px;
+}
+
+/* Анимация загрузки */
+.loading-spinner {
+    width: 50px;
+    height: 50px;
+    border: 3px solid #f3f3f3;
+    border-top: 3px solid var(--primary-color);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Тултипы и поповеры */
+.tooltip-inner {
+    background: var(--dark-color);
+    color: white;
+    border-radius: 8px;
+    padding: 8px 12px;
+}
+
+/* Модальные окна */
+.modal-content {
+    border-radius: var(--border-radius);
+    border: none;
+    box-shadow: var(--box-shadow);
+}
+
+/* Табы */
+.nav-tabs .nav-link {
+    border: none;
+    color: var(--gray-color);
+    border-radius: var(--border-radius);
+    margin-right: 10px;
+}
+
+.nav-tabs .nav-link.active {
+    background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+    color: white;
+}

@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header text-center">
+                    <h4>Регистрация в RentLedger</h4>
+                    <p class="text-muted mb-0">Создайте аккаунт для учёта аренды</p>
+                </div>
+                <div class="card-body">
+                    <form method="post" action="/auth/register">
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Email *</label>
+                            <input type="email" class="form-control" id="email" name="email" required
+                                   placeholder="ваш@email.com">
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="password" class="form-label">Пароль *</label>
+                            <input type="password" class="form-control" id="password" name="password" required
+                                   minlength="8">
+                            <div class="form-text">Не менее 8 символов</div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="full_name" class="form-label">ФИО</label>
+                            <input type="text" class="form-control" id="full_name" name="full_name"
+                                   placeholder="Иванов Иван Иванович">
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="phone" class="form-label">Телефон</label>
+                            <input type="tel" class="form-control" id="phone" name="phone"
+                                   placeholder="+7 (999) 123-45-67">
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Режим налогообложения *</label>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="tax_mode"
+                                       id="self_employed" value="self_employed" checked>
+                                <label class="form-check-label" for="self_employed">
+                                    Самозанятый (4%/6%)
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="tax_mode"
+                                       id="usn_income" value="usn_income">
+                                <label class="form-check-label" for="usn_income">
+                                    УСН "Доходы" (6%)
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="tax_mode"
+                                       id="usn_income_expense" value="usn_income_expense">
+                                <label class="form-check-label" for="usn_income_expense">
+                                    УСН "Доходы-расходы" (15%)
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="alert alert-info">
+                            <small>
+                                <i class="bi bi-info-circle"></i>
+                                Вы сможете изменить режим налогообложения в любой момент в настройках профиля.
+                            </small>
+                        </div>
+
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary btn-lg">Зарегистрироваться</button>
+                        </div>
+                    </form>
+
+                    <div class="text-center mt-3">
+                        <p class="mb-0">Уже есть аккаунт?
+                            <a href="/login">Войти</a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

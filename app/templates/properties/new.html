@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h4>Добавить новый объект</h4>
+                </div>
+                <div class="card-body">
+                    <form method="post" action="/properties">
+                        <div class="mb-3">
+                            <label for="name" class="form-label">Название объекта *</label>
+                            <input type="text" class="form-control" id="name" name="name" required
+                                   placeholder="Например: 2-комн. квартира в центре">
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="property_type" class="form-label">Тип объекта</label>
+                            <select class="form-select" id="property_type" name="property_type">
+                                <option value="квартира" selected>Квартира</option>
+                                <option value="дом">Дом</option>
+                                <option value="комната">Комната</option>
+                                <option value="апартаменты">Апартаменты</option>
+                                <option value="студия">Студия</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="address" class="form-label">Адрес</label>
+                            <input type="text" class="form-control" id="address" name="address"
+                                   placeholder="Полный адрес с городом">
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="base_price" class="form-label">Базовая цена за сутки (₽) *</label>
+                            <input type="number" class="form-control" id="base_price" name="base_price"
+                                   min="100" step="0.01" required>
+                            <div class="form-text">Цена, которая будет использоваться по умолчанию при создании бронирований</div>
+                        </div>
+
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                            <a href="/properties" class="btn btn-secondary me-md-2">Отмена</a>
+                            <button type="submit" class="btn btn-primary">Добавить объект</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

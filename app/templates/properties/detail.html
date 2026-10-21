@@ -1,0 +1,113 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1>{{ property.name }}</h1>
+            <p class="text-muted">
+                <i class="bi bi-geo-alt"></i> {{ property.address|default('Адрес не указан') }}
+                <span class="badge bg-secondary ms-2">{{ property.property_type|default('Квартира') }}</span>
+            </p>
+        </div>
+        <div>
+            <span class="h3">{{ property.base_price }} ₽/сутки</span>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0">Ближайшие бронирования</h5>
+                </div>
+                <div class="card-body">
+                    {% if bookings %}
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Гость</th>
+                                    <th>Заезд</th>
+                                    <th>Выезд</th>
+                                    <th>Сумма</th>
+                                    <th>Статус</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for booking in bookings[:5] %}
+                                <tr>
+                                    <td>{{ booking.guest_name }}</td>
+                                    <td>{{ booking.check_in }}</td>
+                                    <td>{{ booking.check_out }}</td>
+                                    <td>
+                                        <span class="text-success">{{ booking.total_amount }} ₽</span>
+                                        <br>
+                                        <small class="text-muted">из них {{ booking.official_amount }} ₽ официально</small>
+                                    </td>
+                                    <td>
+                                        <span class="badge bg-{% if booking.status == 'confirmed' %}success{% else %}warning{% endif %}">
+                                            {{ booking.status }}
+                                        </span>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                    <p class="text-muted">Нет бронирований</p>
+                    {% endif %}
+                </div>
+                <div class="card-footer">
+                    <a href="/bookings/new?property_id={{ property.id }}" class="btn btn-primary btn-sm">
+                        <i class="bi bi-calendar-plus"></i> Добавить бронирование
+                    </a>
+                    <a href="/bookings/calendar?property_id={{ property.id }}" class="btn btn-outline-secondary btn-sm">
+                        <i class="bi bi-calendar-week"></i> Весь календарь
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">Быстрые действия</h5>
+                </div>
+                <div class="card-body">
+                    <div class="d-grid gap-2">
+                        <a href="/bookings/new?property_id={{ property.id }}" class="btn btn-primary">
+                            <i class="bi bi-calendar-plus"></i> Новое бронирование
+                        </a>
+                        <a href="/transactions/new?transaction_type=expense" class="btn btn-outline-danger">
+                            <i class="bi bi-cash"></i> Добавить расход
+                        </a>
+                        <a href="/bookings/calendar?property_id={{ property.id }}" class="btn btn-outline-secondary">
+                            <i class="bi bi-calendar-week"></i> Календарь
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card mt-3">
+                <div class="card-header">
+                    <h5 class="mb-0">Информация об объекте</h5>
+                </div>
+                <div class="card-body">
+                    <dl class="row">
+                        <dt class="col-sm-6">Тип объекта:</dt>
+                        <dd class="col-sm-6">{{ property.property_type|default('Квартира') }}</dd>
+
+                        <dt class="col-sm-6">Базовая цена:</dt>
+                        <dd class="col-sm-6">{{ property.base_price }} ₽/сутки</dd>
+
+                        <dt class="col-sm-6">Дата добавления:</dt>
+                        <dd class="col-sm-6">{{ property.created_at.strftime('%d.%m.%Y') }}</dd>
+                    </dl>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

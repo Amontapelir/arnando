@@ -1,0 +1,203 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Налоговый калькулятор</h1>
+        <div class="dropdown">
+            <button class="btn btn-outline-secondary dropdown-toggle" type="button"
+                    data-bs-toggle="dropdown" aria-expanded="false">
+                {{ user.tax_mode.value|tax_mode_display }}
+            </button>
+            <ul class="dropdown-menu">
+                <li>
+                    <form method="post" action="/taxes/change-mode">
+                        <button type="submit" name="tax_mode" value="self_employed"
+                                class="dropdown-item {% if user.tax_mode.value == 'self_employed' %}active{% endif %}">
+                            Самозанятый (4%/6%)
+                        </button>
+                    </form>
+                </li>
+                <li>
+                    <form method="post" action="/taxes/change-mode">
+                        <button type="submit" name="tax_mode" value="usn_income"
+                                class="dropdown-item {% if user.tax_mode.value == 'usn_income' %}active{% endif %}">
+                            УСН "Доходы" (6%)
+                        </button>
+                    </form>
+                </li>
+                <li>
+                    <form method="post" action="/taxes/change-mode">
+                        <button type="submit" name="tax_mode" value="usn_income_expense"
+                                class="dropdown-item {% if user.tax_mode.value == 'usn_income_expense' %}active{% endif %}">
+                            УСН "Доходы-расходы" (15%)
+                        </button>
+                    </form>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Фильтр по году -->
+    <div class="card mb-4">
+        <div class="card-body">
+            <form method="get" class="row g-3">
+                <div class="col-md-3">
+                    <label for="year" class="form-label">Год</label>
+                    <select id="year" name="year" class="form-select">
+                        {% for y in range(current_year-2, current_year+3) %}
+                        <option value="{{ y }}" {% if selected_year == y %}selected{% endif %}>
+                            {{ y }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-3 d-flex align-items-end">
+                    <button type="submit" class="btn btn-primary w-100">Показать</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Финансовая сводка -->
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">Финансовые показатели за {{ selected_year }} год</h5>
+                </div>
+                <div class="card-body">
+                    <dl class="row">
+                        <dt class="col-sm-6">Общий доход:</dt>
+                        <dd class="col-sm-6">{{ "%.2f"|format(summary.total_income) }} ₽</dd>
+
+                        <dt class="col-sm-6">Официальный доход:</dt>
+                        <dd class="col-sm-6">
+                            <span class="text-success">{{ "%.2f"|format(summary.official_income) }} ₽</span>
+                        </dd>
+
+                        <dt class="col-sm-6">Неофициальный доход:</dt>
+                        <dd class="col-sm-6">
+                            <span class="text-secondary">{{ "%.2f"|format(summary.unofficial_income) }} ₽</span>
+                        </dd>
+
+                        <dt class="col-sm-6">Вычитаемые расходы:</dt>
+                        <dd class="col-sm-6">{{ "%.2f"|format(summary.deductible_expenses) }} ₽</dd>
+
+                        <dt class="col-sm-6">Прибыль:</dt>
+                        <dd class="col-sm-6">
+                            <strong>{{ "%.2f"|format(summary.profit) }} ₽</strong>
+                        </dd>
+                    </dl>
+                </div>
+            </div>
+        </div>
+
+        <!-- Расчет налога -->
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">Расчёт налога</h5>
+                </div>
+                <div class="card-body">
+                    <div class="text-center mb-3">
+                        <h3 class="text-danger">{{ "%.2f"|format(tax_calculation.tax_amount) }} ₽</h3>
+                        <p class="text-muted">Налог к уплате за {{ selected_year }} год</p>
+                    </div>
+
+                    <dl class="row">
+                        <dt class="col-sm-6">Режим налогообложения:</dt>
+                        <dd class="col-sm-6">{{ tax_calculation.tax_mode.value|tax_mode_display }}</dd>
+
+                        <dt class="col-sm-6">Налоговая база:</dt>
+                        <dd class="col-sm-6">{{ "%.2f"|format(tax_calculation.official_income) }} ₽</dd>
+
+                        {% if tax_calculation.tax_mode.value == 'usn_income_expense' %}
+                        <dt class="col-sm-6">Вычитаемые расходы:</dt>
+                        <dd class="col-sm-6">{{ "%.2f"|format(tax_calculation.deductible_expenses) }} ₽</dd>
+
+                        <dt class="col-sm-6">База для расчёта:</dt>
+                        <dd class="col-sm-6">{{ "%.2f"|format(tax_calculation.details.tax_base) }} ₽</dd>
+                        {% endif %}
+
+                        <dt class="col-sm-6">Ставка налога:</dt>
+                        <dd class="col-sm-6">{{ tax_calculation.details.rate }}</dd>
+
+                        {% if tax_calculation.tax_mode.value == 'self_employed' %}
+                        <dt class="col-sm-6">Использовано лимита:</dt>
+                        <dd class="col-sm-6">{{ "%.2f"|format(tax_calculation.details.limit_used) }} ₽</dd>
+
+                        <dt class="col-sm-6">Годовой лимит:</dt>
+                        <dd class="col-sm-6">2 400 000 ₽</dd>
+                        {% endif %}
+                    </dl>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Сроки уплаты -->
+    <div class="card">
+        <div class="card-header">
+            <h5 class="mb-0">Ближайшие сроки уплаты</h5>
+        </div>
+        <div class="card-body">
+            {% if tax_deadlines %}
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Налог</th>
+                            <th>Срок уплаты</th>
+                            <th>Статус</th>
+                            <th>Дней до срока</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for deadline in tax_deadlines %}
+                        {% set days_left = (deadline.deadline - today).days %}
+                        <tr>
+                            <td>{{ deadline.tax }}</td>
+                            <td>{{ deadline.deadline.strftime('%d.%m.%Y') }}</td>
+                            <td>
+                                {% if days_left < 0 %}
+                                <span class="badge bg-danger">Просрочено</span>
+                                {% elif days_left < 7 %}
+                                <span class="badge bg-warning">Скоро срок</span>
+                                {% else %}
+                                <span class="badge bg-success">Время есть</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if days_left >= 0 %}
+                                {{ days_left }} дней
+                                {% else %}
+                                <span class="text-danger">{{ -days_left }} дней назад</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <p class="text-muted">Нет ближайших сроков уплаты налогов</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Функция для отображения режима налогообложения
+function taxModeDisplay(value) {
+    const modes = {
+        'self_employed': 'Самозанятый (4%/6%)',
+        'usn_income': 'УСН "Доходы" (6%)',
+        'usn_income_expense': 'УСН "Доходы-расходы" (15%)'
+    };
+    return modes[value] || value;
+}
+</script>
+{% endblock %}

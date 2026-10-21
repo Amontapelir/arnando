@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 text-center">
+            <h1 class="display-4 mb-4">RentLedger</h1>
+            <p class="lead mb-4">Учёт посуточной аренды с раздельным бухгалтерским учётом</p>
+
+            <div class="row justify-content-center mb-5">
+                <div class="col-md-10">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Что умеет RentLedger?</h5>
+                            <div class="row text-start">
+                                <div class="col-md-6">
+                                    <ul class="list-unstyled">
+                                        <li class="mb-2"><i class="bi bi-check-circle text-success me-2"></i>Учёт доходов и расходов</li>
+                                        <li class="mb-2"><i class="bi bi-check-circle text-success me-2"></i>Разделение на официальные/неофициальные суммы</li>
+                                        <li class="mb-2"><i class="bi bi-check-circle text-success me-2"></i>Календарь бронирований</li>
+                                    </ul>
+                                </div>
+                                <div class="col-md-6">
+                                    <ul class="list-unstyled">
+                                        <li class="mb-2"><i class="bi bi-check-circle text-success me-2"></i>Автоматический расчёт налогов</li>
+                                        <li class="mb-2"><i class="bi bi-check-circle text-success me-2"></i>Отчёты для налоговой</li>
+                                        <li class="mb-2"><i class="bi bi-check-circle text-success me-2"></i>Поддержка разных режимов налогообложения</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-4">
+                <a href="/login" class="btn btn-primary btn-lg px-4 me-3">
+                    <i class="bi bi-box-arrow-in-right"></i> Войти
+                </a>
+                <a href="/register" class="btn btn-outline-primary btn-lg px-4">
+                    <i class="bi bi-person-plus"></i> Зарегистрироваться
+                </a>
+            </div>
+
+            <div class="mt-5 text-muted">
+                <small>
+                    <i class="bi bi-info-circle me-1"></i>
+                    Система помогает вести учёт аренды жилья с учётом российского законодательства.
+                    <br>Рекомендуем проконсультироваться с бухгалтером для точного расчёта налогов.
+                </small>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
