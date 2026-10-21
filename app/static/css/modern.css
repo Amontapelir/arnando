@@ -23,7 +23,7 @@
 /* Основные стили */
 body {
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #eef1fb 0%, #e6e9f7 100%);
     min-height: 100vh;
     color: var(--text-primary);
     line-height: 1.6;
@@ -94,26 +94,30 @@ body {
     font-weight: 600;
 }
 
-/* Статистические карточки - современный фиолетовый стиль */
+/* Статистические карточки */
 .stat-card {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
+    background: var(--card-bg);
     border-radius: var(--border-radius);
-    padding: 25px;
-    text-align: center;
+    border-left: 4px solid var(--primary-color);
+    box-shadow: var(--box-shadow);
     transition: var(--transition);
-    border: none;
 }
 
 .stat-card:hover {
-    transform: translateY(-5px) scale(1.03);
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+    transform: translateY(-4px);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
 }
 
 .stat-card h3 {
-    font-size: 2.5rem;
+    font-size: 2rem;
     font-weight: 700;
     margin: 10px 0;
+}
+
+.stat-card .card-title {
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
 }
 
 /* Нейтральные стили для статусных карточек */
