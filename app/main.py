@@ -125,6 +125,17 @@ async def register_page(request: Request):
     )
 
 
+@app.get("/help", response_class=HTMLResponse)
+async def help_page(
+        request: Request,
+        current_user: User = Depends(get_current_user)
+):
+    return templates.TemplateResponse(
+        "help.html",
+        {"request": request, "user": current_user}
+    )
+
+
 # /dashboard и /properties обслуживаются роутерами dashboard.router и
 # properties.router (зарегистрированы выше с полноценным набором данных
 # и обязательной авторизацией) — дублирующих маршрутов здесь больше нет.
