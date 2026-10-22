@@ -111,12 +111,37 @@ html[data-theme="dark"] .theme-toggle .bi-moon-stars { display: none; }
 html[data-theme="dark"] .theme-toggle .bi-sun { display: inline-block; }
 
 /* Базовые стили */
+html, body {
+    height: 100%;
+}
+
 body {
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     background: var(--paper);
-    min-height: 100vh;
     color: var(--ink);
     line-height: 1.55;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+body > main {
+    flex: 1 0 auto;
+}
+
+.footer {
+    flex-shrink: 0;
+    background: var(--card-bg) !important;
+    border-top: 1px solid var(--border-color);
+    color: var(--ink-soft);
+}
+
+.footer .text-muted {
+    color: var(--ink-soft) !important;
+}
+
+.footer a {
+    color: var(--accent-dark);
 }
 
 h1, h2, h3, .navbar-brand {
@@ -426,6 +451,65 @@ h1 { font-size: 1.9rem; }
 
 .fade-in {
     animation: fadeIn 0.35s ease-out;
+}
+
+/* Пустые состояния */
+.empty-state {
+    text-align: center;
+    padding: 28px 16px;
+    color: var(--ink-soft);
+}
+
+.empty-state i {
+    font-size: 1.8rem;
+    color: var(--accent);
+    display: block;
+    margin-bottom: 10px;
+}
+
+.empty-state p {
+    margin-bottom: 14px;
+}
+
+/* Мини-сравнение с прошлым месяцем */
+.compare-bar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.compare-bar-track {
+    flex: 1;
+    height: 6px;
+    background: var(--border-color);
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.compare-bar-track.muted {
+    background: var(--paper);
+}
+
+.compare-bar-fill {
+    height: 100%;
+    border-radius: 4px;
+    background: var(--accent);
+}
+
+.compare-bar-fill.muted {
+    background: var(--ink-soft);
+    opacity: 0.4;
+}
+
+.compare-bar-fill.tone-danger { background: var(--danger); }
+.compare-bar-fill.tone-warning { background: var(--official); }
+.compare-bar-fill.tone-primary { background: var(--accent-dark); }
+
+.compare-bar-value {
+    font-size: 0.8rem;
+    font-weight: 600;
+    white-space: nowrap;
+    font-variant-numeric: tabular-nums;
 }
 
 /* Адаптивность */

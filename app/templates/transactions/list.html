@@ -116,7 +116,7 @@
                                 </span>
                             </td>
                             <td>{{ transaction.category }}</td>
-                            <td>{{ transaction.description|default('') }}</td>
+                            <td>{{ transaction.description or '' }}</td>
                             <td>
                                 <strong>{{ "%.2f"|format(transaction.amount) }} ₽</strong>
                             </td>

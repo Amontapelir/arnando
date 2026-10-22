@@ -21,10 +21,10 @@
                 <div class="card-body">
                     <h5 class="card-title">{{ property.name }}</h5>
                     <h6 class="card-subtitle mb-2 text-muted">
-                        {{ property.property_type|default('Квартира') }}
+                        {{ property.property_type or 'Квартира' }}
                     </h6>
                     <p class="card-text">
-                        <i class="bi bi-geo-alt"></i> {{ property.address|default('Адрес не указан') }}
+                        <i class="bi bi-geo-alt"></i> {{ property.address or 'Адрес не указан' }}
                     </p>
                     <p class="card-text">
                         <strong>{{ property.base_price }} ₽/сутки</strong>

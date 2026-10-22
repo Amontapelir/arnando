@@ -6,8 +6,8 @@
         <div>
             <h1>{{ property.name }}</h1>
             <p class="text-muted">
-                <i class="bi bi-geo-alt"></i> {{ property.address|default('Адрес не указан') }}
-                <span class="badge bg-secondary ms-2">{{ property.property_type|default('Квартира') }}</span>
+                <i class="bi bi-geo-alt"></i> {{ property.address or 'Адрес не указан' }}
+                <span class="badge bg-secondary ms-2">{{ property.property_type or 'Квартира' }}</span>
             </p>
         </div>
         <div>
@@ -97,7 +97,7 @@
                 <div class="card-body">
                     <dl class="row">
                         <dt class="col-sm-6">Тип объекта:</dt>
-                        <dd class="col-sm-6">{{ property.property_type|default('Квартира') }}</dd>
+                        <dd class="col-sm-6">{{ property.property_type or 'Квартира' }}</dd>
 
                         <dt class="col-sm-6">Базовая цена:</dt>
                         <dd class="col-sm-6">{{ property.base_price }} ₽/сутки</dd>

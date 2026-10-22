@@ -120,10 +120,13 @@
                         </table>
                     </div>
                     {% else %}
-                    <p class="text-muted">Нет предстоящих бронирований</p>
-                    <a href="/bookings/new" class="btn btn-primary">
-                        <i class="bi bi-calendar-plus"></i> Создать первое бронирование
-                    </a>
+                    <div class="empty-state">
+                        <i class="bi bi-calendar-week"></i>
+                        <p>Нет предстоящих бронирований</p>
+                        <a href="/bookings/new" class="btn btn-primary btn-sm">
+                            <i class="bi bi-calendar-plus"></i> Создать первое бронирование
+                        </a>
+                    </div>
                     {% endif %}
                 </div>
             </div>
@@ -171,7 +174,7 @@
                                 <small>{{ property.base_price }} ₽/сутки</small>
                             </div>
                             <small class="text-muted">
-                                {{ property.property_type|default('Квартира') }}
+                                {{ property.property_type or 'Квартира' }}
                                 {% if property.address %}
                                 · {{ property.address }}
                                 {% endif %}
@@ -187,10 +190,13 @@
                     </div>
                     {% endif %}
                     {% else %}
-                    <p class="text-muted">Нет добавленных объектов</p>
-                    <a href="/properties/new" class="btn btn-sm btn-primary">
-                        Добавить первый объект
-                    </a>
+                    <div class="empty-state">
+                        <i class="bi bi-building"></i>
+                        <p>Нет добавленных объектов</p>
+                        <a href="/properties/new" class="btn btn-primary btn-sm">
+                            Добавить первый объект
+                        </a>
+                    </div>
                     {% endif %}
                 </div>
             </div>
@@ -203,35 +209,30 @@
             <h5 class="mb-0">Сравнение с прошлым месяцем</h5>
         </div>
         <div class="card-body">
-            <div class="row text-center">
-                <div class="col-md-3">
-                    <h6 class="text-muted">Доходы</h6>
-                    <h4 class="text-success">{{ "%.2f"|format(month_summary.total_income) }} ₽</h4>
-                    <small class="text-muted">
-                        Прошлый месяц: {{ "%.2f"|format(prev_month_summary.total_income) }} ₽
-                    </small>
+            <div class="row">
+                {% for label, cur, prev, tone in [
+                    ('Доходы', month_summary.total_income, prev_month_summary.total_income, 'success'),
+                    ('Расходы', month_summary.total_expenses, prev_month_summary.total_expenses, 'danger'),
+                    ('Прибыль', month_summary.profit, prev_month_summary.profit, 'primary'),
+                    ('Налоговая база', month_summary.official_income, prev_month_summary.official_income, 'warning')
+                ] %}
+                {% set scale = [cur, prev, 1]|max %}
+                <div class="col-md-3 mb-3 mb-md-0">
+                    <h6 class="text-muted mb-2">{{ label }}</h6>
+                    <div class="compare-bar">
+                        <div class="compare-bar-track">
+                            <div class="compare-bar-fill tone-{{ tone }}" style="width: {{ (cur / scale * 100)|round(1) }}%"></div>
+                        </div>
+                        <div class="compare-bar-value">{{ "%.2f"|format(cur) }} ₽</div>
+                    </div>
+                    <div class="compare-bar mt-1">
+                        <div class="compare-bar-track muted">
+                            <div class="compare-bar-fill muted" style="width: {{ (prev / scale * 100)|round(1) }}%"></div>
+                        </div>
+                        <div class="compare-bar-value text-muted">{{ "%.2f"|format(prev) }} ₽ · прошлый</div>
+                    </div>
                 </div>
-                <div class="col-md-3">
-                    <h6 class="text-muted">Расходы</h6>
-                    <h4 class="text-danger">{{ "%.2f"|format(month_summary.total_expenses) }} ₽</h4>
-                    <small class="text-muted">
-                        Прошлый месяц: {{ "%.2f"|format(prev_month_summary.total_expenses) }} ₽
-                    </small>
-                </div>
-                <div class="col-md-3">
-                    <h6 class="text-muted">Прибыль</h6>
-                    <h4 class="text-primary">{{ "%.2f"|format(month_summary.profit) }} ₽</h4>
-                    <small class="text-muted">
-                        Прошлый месяц: {{ "%.2f"|format(prev_month_summary.profit) }} ₽
-                    </small>
-                </div>
-                <div class="col-md-3">
-                    <h6 class="text-muted">Налоговая база</h6>
-                    <h4 class="text-warning">{{ "%.2f"|format(month_summary.official_income) }} ₽</h4>
-                    <small class="text-muted">
-                        Прошлый месяц: {{ "%.2f"|format(prev_month_summary.official_income) }} ₽
-                    </small>
-                </div>
+                {% endfor %}
             </div>
         </div>
     </div>

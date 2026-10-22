@@ -38,7 +38,7 @@ async def dashboard(
 
     # Ближайшие бронирования (на 30 дней вперед)
     bookings_end_date = today + timedelta(days=30)
-    bookings = await crud.get_user_transactions(
+    bookings = await crud.get_user_upcoming_bookings(
         db, current_user.id, today, bookings_end_date
     )
 

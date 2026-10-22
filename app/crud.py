@@ -143,6 +143,28 @@ async def get_property_bookings(
     return result.scalars().all()
 
 
+async def get_user_upcoming_bookings(
+        db: AsyncSession,
+        user_id: int,
+        start_date: date,
+        end_date: date
+) -> List[models.Booking]:
+    result = await db.execute(
+        select(models.Booking)
+        .options(selectinload(models.Booking.property))
+        .where(
+            and_(
+                models.Booking.user_id == user_id,
+                models.Booking.status == "confirmed",
+                models.Booking.check_in <= end_date,
+                models.Booking.check_out >= start_date
+            )
+        )
+        .order_by(models.Booking.check_in)
+    )
+    return result.scalars().all()
+
+
 # Transaction CRUD
 async def create_transaction(
         db: AsyncSession,
