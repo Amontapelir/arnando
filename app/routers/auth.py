@@ -9,6 +9,7 @@ from app.database import get_db
 from app import crud, schemas
 from app.auth import verify_password, create_access_token
 from app.config import settings
+from app.demo import get_demo_user, seed_demo
 
 router = APIRouter(prefix="/auth", tags=["auth"])
 templates = Jinja2Templates(directory="app/templates")
@@ -138,4 +139,22 @@ async def login(
 async def logout_get(request: Request):
     response = RedirectResponse(url="/", status_code=303)
     response.delete_cookie(key="access_token")
+    return response
+
+@router.get("/demo")
+async def demo_login(db: AsyncSession = Depends(get_db)):
+    """Вход в демо-аккаунт без пароля"""
+    if not settings.demo_enabled:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Демо-режим отключён")
+
+    user = await get_demo_user(db)
+    if not user:
+        user = await seed_demo(db)
+
+    access_token = create_access_token(
+        data={"sub": str(user.id)},
+        expires_delta=timedelta(minutes=settings.access_token_expire_minutes)
+    )
+    response = RedirectResponse(url="/dashboard", status_code=303)
+    response.set_cookie(key="access_token", value=access_token, httponly=True, max_age=1800, expires=1800)
     return response

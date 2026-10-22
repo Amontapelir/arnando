@@ -17,3 +17,9 @@ except ImportError:
 
 # Убираем get_flashed_messages - это функция Flask, в FastAPI её нет
 templates.env.globals["get_flashed_messages"] = lambda: []
+
+# Плашка демо-режима в base.html
+from app.demo import is_demo_user  # noqa: E402
+from app.config import settings  # noqa: E402
+templates.env.globals["is_demo_user"] = is_demo_user
+templates.env.globals["demo_enabled"] = settings.demo_enabled

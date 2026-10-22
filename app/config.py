@@ -13,6 +13,8 @@ class Settings(BaseSettings):
 
     # App
     debug: bool = False
+    # Демо-аккаунт с тестовыми данными и кнопкой «Посмотреть демо»
+    demo_enabled: bool = True
     allowed_hosts: List[str] = ["localhost", "127.0.0.1", "0.0.0.0"]
 
     class Config:
