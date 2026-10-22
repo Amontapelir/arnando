@@ -7,7 +7,7 @@ from contextlib import asynccontextmanager
 
 from app.config import settings
 from app.database import engine, Base
-from app.routers import auth, properties, bookings, transactions, taxes, reports, dashboard
+from app.routers import auth, properties, bookings, transactions, taxes, reports, dashboard, profile
 from app.dependencies import get_current_user
 from app.models import User
 from app.templates import templates
@@ -64,6 +64,7 @@ app.include_router(transactions.router)
 app.include_router(taxes.router)
 app.include_router(reports.router)
 app.include_router(dashboard.router)
+app.include_router(profile.router)
 
 
 # Главная страница

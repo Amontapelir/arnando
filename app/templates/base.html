@@ -5,6 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}RentLedger - Учёт посуточной аренды{% endblock %}</title>
 
+    <!-- Применяем сохранённую тему до отрисовки, чтобы не было мигания -->
+    <script>
+        (function () {
+            var saved = localStorage.getItem('rl-theme');
+            if (saved === 'dark') {
+                document.documentElement.setAttribute('data-theme', 'dark');
+            }
+        })();
+    </script>
+
     <!-- Bootstrap 5 -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
 
@@ -15,8 +25,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Lora:wght@500;600;700&display=swap" rel="stylesheet">
 
     <!-- Стили -->
-    <link rel="stylesheet" href="/static/css/main.css?v=3">
-    <link rel="stylesheet" href="/static/css/modern.css?v=3">
+    <link rel="stylesheet" href="/static/css/main.css?v=5">
+    <link rel="stylesheet" href="/static/css/modern.css?v=5">
 
     {% block extra_css %}{% endblock %}
 
@@ -30,6 +40,11 @@
             <a class="navbar-brand" href="/">
                 <i class="bi bi-house-heart me-2"></i> RentLedger
             </a>
+
+            <button type="button" class="theme-toggle me-2" id="themeToggle" title="Переключить тему" aria-label="Переключить тему">
+                <i class="bi bi-moon-stars"></i>
+                <i class="bi bi-sun"></i>
+            </button>
 
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
@@ -84,7 +99,7 @@
                             {% if user.email %}{{ user.email }}{% else %}{{ user.full_name }}{% endif %}
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end">
-                            <li><a class="dropdown-item" href="#"><i class="bi bi-gear me-2"></i> Настройки</a></li>
+                            <li><a class="dropdown-item" href="/profile"><i class="bi bi-gear me-2"></i> Настройки</a></li>
                             <li><a class="dropdown-item" href="/auth/logout"><i class="bi bi-box-arrow-right me-2"></i> Выйти</a></li>
                         </ul>
                     </div>
@@ -135,6 +150,19 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="/static/js/main.js"></script>
     <script src="/static/js/modern.js"></script>
+    <script>
+        document.getElementById('themeToggle').addEventListener('click', function () {
+            var root = document.documentElement;
+            var isDark = root.getAttribute('data-theme') === 'dark';
+            if (isDark) {
+                root.removeAttribute('data-theme');
+                localStorage.setItem('rl-theme', 'light');
+            } else {
+                root.setAttribute('data-theme', 'dark');
+                localStorage.setItem('rl-theme', 'dark');
+            }
+        });
+    </script>
 
     {% block extra_js %}{% endblock %}
 </body>

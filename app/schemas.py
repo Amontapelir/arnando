@@ -34,6 +34,11 @@ class UserLogin(BaseModel):
     password: str
 
 
+class UserUpdate(BaseModel):
+    full_name: Optional[str] = None
+    phone: Optional[str] = None
+
+
 class User(UserBase):
     id: int
     is_active: bool

@@ -3,6 +3,8 @@
    Один акцент (тёмная бирюза), гроссбух-эстетика вместо дженерик-SaaS-карточек. */
 
 :root {
+    color-scheme: light;
+
     --ink: #16222e;
     --ink-soft: #4b5a67;
     --accent: #0f6b5c;
@@ -34,6 +36,79 @@
     --text-primary: var(--ink);
     --neutral-bg: var(--card-bg);
 }
+
+html[data-theme="dark"] {
+    color-scheme: dark;
+
+    --ink: #e9eef0;
+    --ink-soft: #9fb0ac;
+    --accent: #3cab93;
+    --accent-dark: #2f8d78;
+    --accent-tint: rgba(60, 171, 147, 0.16);
+    --official: #d9a24b;
+    --official-tint: rgba(217, 162, 75, 0.14);
+    --danger: #e0796a;
+    --danger-tint: rgba(224, 121, 106, 0.14);
+
+    --paper: #0f1417;
+    --card-bg: #171d21;
+    --border-color: #2a3237;
+
+    --shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 8px 24px rgba(0, 0, 0, 0.25);
+}
+
+html[data-theme="dark"] .form-control,
+html[data-theme="dark"] .form-select {
+    background-color: var(--card-bg);
+    color: var(--ink);
+    border-color: var(--border-color);
+}
+
+html[data-theme="dark"] .form-control::placeholder {
+    color: var(--ink-soft);
+}
+
+html[data-theme="dark"] .table {
+    color: var(--ink);
+}
+
+html[data-theme="dark"] .dropdown-menu {
+    background-color: var(--card-bg);
+    border-color: var(--border-color);
+}
+
+html[data-theme="dark"] .dropdown-item {
+    color: var(--ink);
+}
+
+html[data-theme="dark"] .dropdown-item:hover {
+    background-color: var(--paper);
+    color: var(--ink);
+}
+
+/* Переключатель темы */
+.theme-toggle {
+    border: 1px solid var(--border-color);
+    background: var(--card-bg);
+    color: var(--ink-soft);
+    width: 36px;
+    height: 36px;
+    border-radius: var(--radius-sm);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: var(--transition);
+    cursor: pointer;
+}
+
+.theme-toggle:hover {
+    color: var(--ink);
+    border-color: var(--accent);
+}
+
+html[data-theme="dark"] .theme-toggle .bi-moon-stars { display: none; }
+.theme-toggle .bi-sun { display: none; }
+html[data-theme="dark"] .theme-toggle .bi-sun { display: inline-block; }
 
 /* Базовые стили */
 body {

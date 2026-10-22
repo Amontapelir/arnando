@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-7">
+        <h1 class="mb-4">Настройки профиля</h1>
+
+        <div class="card mb-4">
+            <div class="card-header">Личные данные</div>
+            <div class="card-body">
+                <form method="post" action="/profile">
+                    <div class="mb-3">
+                        <label class="form-label">Email</label>
+                        <input type="email" class="form-control" value="{{ user.email }}" disabled>
+                        <div class="form-text">Email нельзя изменить</div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="full_name" class="form-label">ФИО</label>
+                        <input type="text" id="full_name" name="full_name" class="form-control"
+                               value="{{ user.full_name or '' }}">
+                    </div>
+                    <div class="mb-3">
+                        <label for="phone" class="form-label">Телефон</label>
+                        <input type="tel" id="phone" name="phone" class="form-control"
+                               value="{{ user.phone or '' }}">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Сохранить</button>
+                </form>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">Режим налогообложения</div>
+            <div class="card-body">
+                <p class="text-muted">Используется в налоговом калькуляторе и отчётах.</p>
+                <form method="post" action="/taxes/change-mode">
+                    <div class="form-check mb-2">
+                        <input class="form-check-input" type="radio" name="tax_mode" id="pm_self"
+                               value="self_employed" {% if user.tax_mode.value == 'self_employed' %}checked{% endif %}>
+                        <label class="form-check-label" for="pm_self">Самозанятый (НПД 4%/6%)</label>
+                    </div>
+                    <div class="form-check mb-2">
+                        <input class="form-check-input" type="radio" name="tax_mode" id="pm_usn_i"
+                               value="usn_income" {% if user.tax_mode.value == 'usn_income' %}checked{% endif %}>
+                        <label class="form-check-label" for="pm_usn_i">УСН "Доходы" (6%)</label>
+                    </div>
+                    <div class="form-check mb-3">
+                        <input class="form-check-input" type="radio" name="tax_mode" id="pm_usn_ie"
+                               value="usn_income_expense" {% if user.tax_mode.value == 'usn_income_expense' %}checked{% endif %}>
+                        <label class="form-check-label" for="pm_usn_ie">УСН "Доходы-расходы" (15%)</label>
+                    </div>
+                    <button type="submit" class="btn btn-outline-primary">Изменить режим</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

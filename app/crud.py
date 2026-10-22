@@ -40,6 +40,18 @@ async def get_user(db: AsyncSession, user_id: int) -> Optional[models.User]:
     return result.scalar_one_or_none()
 
 
+async def update_user_profile(
+        db: AsyncSession,
+        user: models.User,
+        profile: schemas.UserUpdate
+) -> models.User:
+    user.full_name = profile.full_name
+    user.phone = profile.phone
+    await db.commit()
+    await db.refresh(user)
+    return user
+
+
 # Property CRUD
 async def get_user_properties(db: AsyncSession, user_id: int) -> List[models.Property]:
     result = await db.execute(
