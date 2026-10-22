@@ -2,26 +2,14 @@
 @import url('modern.css');
 
 /* Дополнительные кастомные стили */
-.hero-section {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    border-radius: var(--border-radius);
-    padding: 60px;
-    color: white;
-    margin-bottom: 40px;
-    text-align: center;
-}
-
 .feature-icon {
-    font-size: 3rem;
-    background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
-    margin-bottom: 20px;
+    font-size: 2.25rem;
+    color: var(--accent);
+    margin-bottom: 16px;
 }
 
 .progress-bar {
-    background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+    background: var(--accent);
     border-radius: 10px;
 }
 
@@ -64,6 +52,6 @@
 }
 
 .nav-tabs .nav-link.active {
-    background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+    background: var(--accent);
     color: white;
 }

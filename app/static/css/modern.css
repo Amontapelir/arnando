@@ -1,324 +1,362 @@
-/* Современные стили для RentLedger */
+/* RentLedger — визуальная система
+   Финансовый учёт для арендодателей: точность и доверие важнее "вау"-эффекта.
+   Один акцент (тёмная бирюза), гроссбух-эстетика вместо дженерик-SaaS-карточек. */
 
 :root {
-    --primary-color: #4361ee;
-    --primary-dark: #3a56d4;
-    --secondary-color: #7209b7;
-    --success-color: #4cc9f0;
-    --warning-color: #f72585;
-    --dark-color: #1a1a2e;
-    --light-color: #f8f9fa;
-    --gray-color: #6c757d;
-    --border-radius: 12px;
-    --box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
-    --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --ink: #16222e;
+    --ink-soft: #4b5a67;
+    --accent: #0f6b5c;
+    --accent-dark: #0b5347;
+    --accent-tint: #e4f0ed;
+    --official: #a9680f;
+    --official-tint: #faf1e3;
+    --danger: #a8402f;
+    --danger-tint: #fbece9;
 
-    /* Дополнительные переменные для нейтральных стилей */
+    --paper: #f6f7f5;
     --card-bg: #ffffff;
-    --border-color: #e9ecef;
-    --text-primary: #333;
-    --neutral-bg: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+    --border-color: #e1e5e2;
+
+    --radius: 10px;
+    --radius-sm: 6px;
+    --shadow: 0 1px 2px rgba(22, 34, 46, 0.06), 0 8px 24px rgba(22, 34, 46, 0.06);
+    --transition: all 0.18s ease;
+
+    /* Совместимость со старыми переменными, которые ещё где-то используются */
+    --primary-color: var(--accent);
+    --primary-dark: var(--accent-dark);
+    --secondary-color: var(--accent);
+    --dark-color: var(--ink);
+    --light-color: var(--paper);
+    --gray-color: var(--ink-soft);
+    --border-radius: var(--radius);
+    --box-shadow: var(--shadow);
+    --text-primary: var(--ink);
+    --neutral-bg: var(--card-bg);
 }
 
-/* Основные стили */
+/* Базовые стили */
 body {
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
-    background: linear-gradient(135deg, #eef1fb 0%, #e6e9f7 100%);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: var(--paper);
     min-height: 100vh;
-    color: var(--text-primary);
-    line-height: 1.6;
+    color: var(--ink);
+    line-height: 1.55;
 }
 
-/* Контейнер */
+h1, h2, h3, .navbar-brand {
+    font-family: 'Lora', Georgia, serif;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+}
+
+h1 { font-size: 1.9rem; }
+
 .container {
-    max-width: 1400px;
+    max-width: 1280px;
     margin: 0 auto;
     padding: 20px;
 }
 
 /* Навигация */
 .navbar {
-    background: rgba(255, 255, 255, 0.95);
-    backdrop-filter: blur(10px);
-    box-shadow: var(--box-shadow);
-    border-radius: 0 0 var(--border-radius) var(--border-radius);
-    padding: 15px 30px;
-    border: none;
+    background: var(--card-bg);
+    border-bottom: 1px solid var(--border-color);
+    padding: 14px 30px;
 }
 
 .navbar-brand {
-    font-weight: 700;
-    font-size: 1.5rem;
-    background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
+    font-size: 1.3rem;
+    color: var(--ink) !important;
 }
 
 .nav-link {
+    font-family: 'Inter', sans-serif;
     font-weight: 500;
-    padding: 8px 16px;
-    margin: 0 4px;
-    border-radius: 8px;
+    color: var(--ink-soft);
+    padding: 8px 14px;
+    margin: 0 2px;
+    border-radius: var(--radius-sm);
     transition: var(--transition);
 }
 
-.nav-link:hover, .nav-link.active {
-    background: var(--primary-color);
-    color: white !important;
-    transform: translateY(-2px);
+.nav-link:hover {
+    color: var(--ink) !important;
+    background: var(--paper);
+}
+
+.nav-link.active {
+    background: var(--accent-tint);
+    color: var(--accent-dark) !important;
+    font-weight: 600;
 }
 
 /* Карточки */
 .card {
-    border: none;
-    border-radius: var(--border-radius);
-    box-shadow: var(--box-shadow);
-    transition: var(--transition);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
     overflow: hidden;
     margin-bottom: 20px;
-    background: rgba(255, 255, 255, 0.95);
-    backdrop-filter: blur(10px);
-}
-
-.card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+    background: var(--card-bg);
 }
 
 .card-header {
-    background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
-    color: white;
-    border: none;
-    padding: 20px;
+    background: var(--card-bg);
+    color: var(--ink);
+    border-bottom: 1px solid var(--border-color);
+    padding: 16px 20px;
+    font-family: 'Lora', Georgia, serif;
     font-weight: 600;
 }
 
-/* Статистические карточки */
+/* Статистические карточки дашборда */
 .stat-card {
     background: var(--card-bg);
-    border-radius: var(--border-radius);
-    border-left: 4px solid var(--primary-color);
-    box-shadow: var(--box-shadow);
-    transition: var(--transition);
-}
-
-.stat-card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+    border: 1px solid var(--border-color);
+    border-left: 3px solid var(--accent);
+    border-radius: var(--radius);
 }
 
 .stat-card h3 {
-    font-size: 2rem;
+    font-family: 'Inter', sans-serif;
+    font-size: 1.85rem;
     font-weight: 700;
-    margin: 10px 0;
+    font-variant-numeric: tabular-nums;
+    margin: 8px 0;
+    letter-spacing: -0.01em;
 }
 
 .stat-card .card-title {
-    font-size: 0.85rem;
-    text-transform: uppercase;
-    letter-spacing: 0.03em;
+    font-size: 0.8rem;
+    color: var(--ink-soft);
+    font-weight: 500;
 }
 
-/* Нейтральные стили для статусных карточек */
+/* Статусные акценты — используются точечно, не на весь блок */
 .bg-success, .gradient-success {
-    background: var(--neutral-bg) !important;
-    color: var(--text-primary) !important;
-    border: 1px solid #d1d9e6 !important;
-    border-radius: var(--border-radius);
+    background: var(--accent-tint) !important;
+    color: var(--accent-dark) !important;
+    border: 1px solid #cfe3de !important;
+    border-radius: var(--radius-sm);
 }
 
 .bg-warning, .gradient-warning {
-    background: var(--neutral-bg) !important;
-    color: var(--text-primary) !important;
-    border: 1px solid #d1d9e6 !important;
-    border-radius: var(--border-radius);
+    background: var(--official-tint) !important;
+    color: var(--official) !important;
+    border: 1px solid #ecd9ba !important;
+    border-radius: var(--radius-sm);
+}
+
+.bg-danger, .gradient-danger {
+    background: var(--danger-tint) !important;
+    color: var(--danger) !important;
+    border: 1px solid #efcac3 !important;
+    border-radius: var(--radius-sm);
 }
 
 .bg-info, .gradient-info {
-    background: var(--neutral-bg) !important;
-    color: var(--text-primary) !important;
-    border: 1px solid #d1d9e6 !important;
-    border-radius: var(--border-radius);
+    background: var(--paper) !important;
+    color: var(--ink-soft) !important;
+    border: 1px solid var(--border-color) !important;
+    border-radius: var(--radius-sm);
 }
 
-/* Сохраняем фиолетовый градиент для primary карточек */
 .bg-primary, .gradient-primary {
-    background: linear-gradient(45deg, var(--primary-color), var(--secondary-color)) !important;
+    background: var(--accent) !important;
     color: white !important;
     border: none !important;
-    border-radius: var(--border-radius);
+    border-radius: var(--radius-sm);
 }
 
-/* Герой-секция */
+.text-success { color: var(--accent-dark) !important; }
+.text-danger { color: var(--danger) !important; }
+.text-warning { color: var(--official) !important; }
+.text-primary { color: var(--accent-dark) !important; }
+
+/* Герой-секция главной страницы */
 .hero-section {
-    background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+    background: var(--ink);
     color: white;
-    border-radius: var(--border-radius);
-    padding: 60px 40px;
+    border-radius: var(--radius);
+    padding: 56px 40px;
     margin-bottom: 30px;
+    position: relative;
+    overflow: hidden;
 }
 
-.hero-section h1, .hero-section p, .hero-section .btn {
+.hero-section::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(120deg, transparent 40%, rgba(15, 107, 92, 0.35));
+    pointer-events: none;
+}
+
+.hero-section h1, .hero-section p {
     color: white !important;
+    position: relative;
+}
+
+.hero-section .btn-primary {
+    background: var(--accent);
 }
 
 /* Кнопки */
 .btn {
-    border-radius: 8px;
+    border-radius: var(--radius-sm);
+    font-family: 'Inter', sans-serif;
     font-weight: 600;
-    padding: 10px 24px;
+    padding: 9px 20px;
     transition: var(--transition);
-    border: none;
+    border: 1px solid transparent;
 }
 
 .btn-primary {
-    background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
-    border: none;
+    background: var(--accent);
+    border-color: var(--accent);
 }
 
 .btn-primary:hover {
-    background: linear-gradient(45deg, var(--primary-dark), #5a08a0);
-    transform: translateY(-2px);
-    box-shadow: 0 4px 15px rgba(67, 97, 238, 0.4);
+    background: var(--accent-dark);
+    border-color: var(--accent-dark);
 }
 
 .btn-outline-primary {
-    border: 2px solid var(--primary-color);
-    color: var(--primary-color);
+    border: 1px solid var(--accent);
+    color: var(--accent-dark);
     background: transparent;
 }
 
 .btn-outline-primary:hover {
-    background: var(--primary-color);
+    background: var(--accent-tint);
+    color: var(--accent-dark);
+}
+
+.btn-success {
+    background: var(--accent-dark);
+    border-color: var(--accent-dark);
+}
+
+.btn-success:hover {
+    background: var(--accent);
+    border-color: var(--accent);
+}
+
+.btn-danger, .btn-outline-danger {
+    color: var(--danger);
+}
+
+.btn-danger {
+    background: var(--danger);
+    border-color: var(--danger);
     color: white;
-    transform: translateY(-2px);
+}
+
+.btn-outline-danger {
+    border: 1px solid var(--danger);
+    background: transparent;
+}
+
+.btn-outline-danger:hover {
+    background: var(--danger-tint);
+    color: var(--danger);
+}
+
+.btn-warning {
+    background: var(--official);
+    border-color: var(--official);
+    color: white;
+}
+
+.btn-warning:hover {
+    background: #8f5709;
+    border-color: #8f5709;
+    color: white;
 }
 
 /* Таблицы */
 .table {
-    border-radius: var(--border-radius);
+    border-radius: var(--radius);
     overflow: hidden;
 }
 
 .table thead th {
-    background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
-    color: white;
-    border: none;
-    padding: 15px;
+    background: var(--paper);
+    color: var(--ink-soft);
+    border-bottom: 1px solid var(--border-color);
+    padding: 12px 15px;
     font-weight: 600;
-}
-
-.table tbody tr {
-    transition: var(--transition);
+    font-size: 0.85rem;
 }
 
 .table tbody tr:hover {
-    background: rgba(67, 97, 238, 0.1);
-    transform: scale(1.01);
+    background: var(--paper);
 }
 
 /* Формы */
 .form-control, .form-select {
-    border: 2px solid #e9ecef;
-    border-radius: 8px;
-    padding: 12px 16px;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    padding: 10px 14px;
     transition: var(--transition);
 }
 
 .form-control:focus, .form-select:focus {
-    border-color: var(--primary-color);
-    box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2);
-    transform: translateY(-1px);
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px var(--accent-tint);
 }
 
-/* Бэйджи - современный стиль */
+/* Бэйджи */
 .badge {
-    padding: 8px 12px;
-    border-radius: 20px;
+    padding: 6px 10px;
+    border-radius: var(--radius-sm);
     font-weight: 600;
+    font-size: 0.78rem;
 }
 
 .badge.bg-primary {
-    background: linear-gradient(45deg, var(--primary-color), var(--secondary-color)) !important;
-}
-
-/* Нейтральные бэйджи для статусов */
-.badge.bg-success {
-    background: var(--neutral-bg) !important;
-    color: var(--text-primary) !important;
-    border: 1px solid #d1d9e6 !important;
-}
-
-.badge.bg-warning {
-    background: var(--neutral-bg) !important;
-    color: var(--text-primary) !important;
-    border: 1px solid #d1d9e6 !important;
-}
-
-.badge.bg-info {
-    background: var(--neutral-bg) !important;
-    color: var(--text-primary) !important;
-    border: 1px solid #d1d9e6 !important;
+    background: var(--accent) !important;
 }
 
 /* Календарь */
 .calendar-container {
-    background: white;
-    border-radius: var(--border-radius);
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
     padding: 20px;
-    box-shadow: var(--box-shadow);
 }
 
 .calendar-day {
-    border: 1px solid #e9ecef;
+    border: 1px solid var(--border-color);
     padding: 10px;
     min-height: 120px;
     transition: var(--transition);
 }
 
 .calendar-day:hover {
-    background: rgba(67, 97, 238, 0.1);
-    transform: scale(1.05);
+    background: var(--paper);
 }
 
 .calendar-day.today {
-    background: linear-gradient(45deg, rgba(67, 97, 238, 0.1), rgba(114, 9, 183, 0.1));
-    border: 2px solid var(--primary-color);
+    background: var(--accent-tint);
+    border: 1px solid var(--accent);
 }
 
-/* Анимации */
+/* Единственный орестрированный момент появления — только главный блок страницы */
 @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(20px); }
+    from { opacity: 0; transform: translateY(8px); }
     to { opacity: 1; transform: translateY(0); }
 }
 
 .fade-in {
-    animation: fadeIn 0.6s ease-out;
-}
-
-/* Эффекты */
-.glass-effect {
-    background: rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    animation: fadeIn 0.35s ease-out;
 }
 
 /* Адаптивность */
 @media (max-width: 768px) {
-    .container {
-        padding: 10px;
-    }
-
-    .navbar {
-        padding: 10px 15px;
-    }
-
-    .stat-card h3 {
-        font-size: 2rem;
-    }
-
-    .hero-section {
-        padding: 40px 20px;
-    }
+    .container { padding: 10px; }
+    .navbar { padding: 10px 15px; }
+    .stat-card h3 { font-size: 1.6rem; }
+    .hero-section { padding: 36px 20px; }
 }
