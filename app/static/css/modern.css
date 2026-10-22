@@ -204,22 +204,22 @@ h1 { font-size: 1.9rem; }
     color: var(--ink) !important;
 }
 
-.nav-link {
+.navbar .nav-link {
     font-family: 'Inter', sans-serif;
     font-weight: 500;
-    color: var(--ink-soft);
+    color: var(--ink-soft) !important;
     padding: 8px 14px;
     margin: 0 2px;
     border-radius: var(--radius-sm);
     transition: var(--transition);
 }
 
-.nav-link:hover {
+.navbar .nav-link:hover {
     color: var(--ink) !important;
     background: var(--paper);
 }
 
-.nav-link.active {
+.navbar .nav-link.active {
     background: var(--accent-tint);
     color: var(--accent-dark) !important;
     font-weight: 600;
