@@ -3,6 +3,7 @@ uvicorn[standard]==0.24.0
 sqlalchemy==2.0.23
 alembic==1.12.1
 asyncpg==0.29.0
+aiosqlite==0.19.0  # SQLite для демо без отдельной БД
 python-dotenv==1.0.0
 python-jose[cryptography]==3.3.0
 passlib==1.7.4  # Убрали [bcrypt]
