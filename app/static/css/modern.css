@@ -302,9 +302,22 @@ h1 { font-size: 1.9rem; }
 html[data-theme="dark"] .card.bg-success,
 html[data-theme="dark"] .card.bg-warning,
 html[data-theme="dark"] .card.bg-danger,
-html[data-theme="dark"] .card.bg-info {
+html[data-theme="dark"] .card.bg-info,
+html[data-theme="dark"] .card.bg-primary {
     background: var(--card-bg) !important;
     border-width: 1px !important;
+}
+
+/* Карточка-сводка "Общий доход" была единственной со сплошной
+   насыщенной заливкой (белый текст на ярком акценте) — на крупных
+   карточках это выглядит гораздо резче, чем на кнопках/бэйджах того
+   же цвета. Приводим её к тому же приглушённому стилю, что и соседние
+   карточки сводки (bg-success/bg-danger/bg-warning), не трогая саму
+   .bg-primary для кнопок и бэйджей. */
+.card.bg-primary {
+    background: var(--accent-tint) !important;
+    color: var(--accent-dark) !important;
+    border: 1px solid currentColor !important;
 }
 
 .bg-primary, .gradient-primary {
