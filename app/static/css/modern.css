@@ -86,6 +86,34 @@ html[data-theme="dark"] .dropdown-item:hover {
     color: var(--ink);
 }
 
+.list-group-item {
+    background-color: var(--card-bg);
+    color: var(--ink);
+    border-color: var(--border-color);
+}
+
+.list-group-item-action:hover,
+.list-group-item-action:focus {
+    background-color: var(--paper);
+    color: var(--ink);
+}
+
+/* Кнопка-гамбургер мобильного меню: всегда заметная рамка/фон,
+   а в тёмной теме ещё и светлая иконка вместо тёмной bootstrap-версии */
+.navbar-toggler {
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
+}
+
+.navbar-toggler:focus {
+    box-shadow: 0 0 0 3px var(--accent-tint);
+}
+
+html[data-theme="dark"] .navbar-toggler-icon {
+    filter: invert(1);
+}
+
 /* Переключатель темы */
 .theme-toggle {
     border: 1px solid var(--border-color);
