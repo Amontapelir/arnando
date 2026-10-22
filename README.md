@@ -11,13 +11,22 @@
 
 ## ✨ Возможности
 
-- 📊 **Дашборд** — доходы, расходы, прибыль и налоговая база за месяц
+- 📊 **Дашборд** — доходы, расходы, прибыль и налоговая база за месяц, сравнение с прошлым месяцем
 - 🏢 **Объекты недвижимости** — добавление и управление
 - 📅 **Календарь бронирований** — с проверкой пересечения дат
 - 💰 **Раздельный учёт** — официальная и неофициальная часть дохода по каждой операции
 - 🧮 **Налоговый калькулятор** — самозанятость (НПД 4%/6%), УСН "Доходы", УСН "Доходы-расходы"
 - 📈 **Отчёты** — экспорт в CSV (финансовый и налоговый отчёт за год)
+- 👤 **Профиль** — редактирование личных данных, смена режима налогообложения
+- 🌓 **Светлая/тёмная тема** — переключатель с запоминанием выбора
 - 🔐 **JWT-аутентификация** — через cookie для веб-интерфейса
+
+### Дизайн
+
+Собственная визуальная система ("гроссбух", а не типовой SaaS-шаблон): один
+акцентный цвет, Lora для заголовков рядом с Inter для интерфейса, карточки на
+тонких обводках вместо тяжёлых теней и градиентов. Полностью поддерживается
+тёмная тема во всех разделах.
 
 ---
 
@@ -45,7 +54,7 @@ rentledger/
 │   ├── dependencies.py    # Зависимости авторизации
 │   ├── database.py          # Подключение к БД
 │   ├── config.py              # Конфигурация (pydantic-settings)
-│   ├── routers/                # Роутеры: auth, properties, bookings, transactions, taxes, reports, dashboard
+│   ├── routers/                # Роутеры: auth, properties, bookings, transactions, taxes, reports, dashboard, profile
 │   ├── services/               # Бизнес-логика: расчёт бронирований, финансов, налогов
 │   ├── templates/             # Jinja2-шаблоны
 │   └── static/                  # CSS/JS
@@ -71,7 +80,7 @@ docker compose up --build
 
 Приложение будет доступно на `http://localhost:8000`.
 
-### Локально без Docker
+### Локально без Docker (с Postgres)
 
 ```bash
 python -m venv .venv
@@ -80,11 +89,31 @@ python -m venv .venv
 
 pip install -r requirements.txt
 cp .env.example .env
-# укажите DATABASE_URL на свой Postgres (или sqlite+aiosqlite:///./dev.db для быстрого теста)
+# укажите DATABASE_URL на свой Postgres
 
 alembic upgrade head
 uvicorn app.main:app --reload --port 8001
 ```
+
+### Быстрый локальный запуск на SQLite (без Postgres и без Docker)
+
+Удобно для демонстрации/проверки, когда под рукой нет Postgres:
+
+```bash
+pip install -r requirements.txt
+pip install aiosqlite
+
+# Windows PowerShell:
+$env:DATABASE_URL = "sqlite+aiosqlite:///./dev.db"
+$env:SECRET_KEY = "local-dev-secret-key"
+uvicorn app.main:app --reload --port 8001
+
+# Linux/Mac:
+# DATABASE_URL="sqlite+aiosqlite:///./dev.db" SECRET_KEY="local-dev-secret-key" uvicorn app.main:app --reload --port 8001
+```
+
+Таблицы создаются автоматически при старте. Alembic-миграции рассчитаны на
+Postgres и для этого режима не нужны.
 
 ---
 
