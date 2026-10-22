@@ -16,7 +16,7 @@ def create_app():
     app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'dev-secret-key')
     app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get(
         'DATABASE_URL',
-        'postgresql://postgres:postgres@localhost:5432/rentledger'
+        'postgresql://postgres:postgres@localhost:5432/arnando'
     )
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 

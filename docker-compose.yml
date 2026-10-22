@@ -4,15 +4,15 @@ services:
   postgres:
     image: postgres:15-alpine
     environment:
-      POSTGRES_USER: rentledger
-      POSTGRES_PASSWORD: rentledger_pass
-      POSTGRES_DB: rentledger_db
+      POSTGRES_USER: arnando
+      POSTGRES_PASSWORD: arnando_pass
+      POSTGRES_DB: arnando_db
     ports:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U rentledger -d rentledger_db"]  # ИЗМЕНЕНО
+      test: ["CMD-SHELL", "pg_isready -U arnando -d arnando_db"]  # ИЗМЕНЕНО
       interval: 30s
       timeout: 10s
       retries: 3
@@ -34,7 +34,7 @@ services:
     env_file:
       - .env
     environment:
-      DATABASE_URL: postgresql+asyncpg://rentledger:rentledger_pass@postgres:5432/rentledger_db
+      DATABASE_URL: postgresql+asyncpg://arnando:arnando_pass@postgres:5432/arnando_db
       SECRET_KEY: ${SECRET_KEY}
       REDIS_URL: redis://redis:6379
     ports:

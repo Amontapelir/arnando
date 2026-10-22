@@ -1,4 +1,4 @@
-# 🏠 RentLedger (Arnando) — учёт посуточной аренды для самозанятых
+# 🏠 Arnando — учёт посуточной аренды для самозанятых
 
 Веб-приложение для учёта посуточной аренды недвижимости с раздельным бухгалтерским
 учётом официальных и неофициальных сумм, календарём бронирований и калькулятором
@@ -46,7 +46,7 @@ REST API и отдельного фронтенда).
 ### Структура проекта
 
 ```text
-rentledger/
+arnando/
 ├── app/
 │   ├── main.py              # FastAPI-приложение и маршруты
 │   ├── models.py             # SQLAlchemy модели
@@ -74,8 +74,8 @@ rentledger/
 ### Через Docker (рекомендуется)
 
 ```bash
-git clone https://github.com/Amontapelir/arnando.git rentledger
-cd rentledger
+git clone https://github.com/Amontapelir/arnando.git arnando
+cd arnando
 cp .env.example .env   # и заполните SECRET_KEY своим значением
 docker compose up --build
 ```

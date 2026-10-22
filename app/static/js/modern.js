@@ -1,4 +1,4 @@
-// Современные функции для RentLedger
+// Современные функции для Arnando
 
 document.addEventListener('DOMContentLoaded', function() {
     // Плавные переходы для всех ссылок

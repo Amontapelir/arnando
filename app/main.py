@@ -28,7 +28,7 @@ async def lifespan(app: FastAPI):
 
 
 app = FastAPI(
-    title="RentLedger",
+    title="Arnando",
     description="Учёт посуточной аренды с раздельным бухгалтерским учётом",
     version="0.1.0",
     lifespan=lifespan

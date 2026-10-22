@@ -1,4 +1,4 @@
-// Руководство по использованию RentLedger
+// Руководство по использованию Arnando
 class AppTour {
     constructor() {
         this.steps = [];
@@ -6,7 +6,7 @@ class AppTour {
         this.userId = null;
         this.tourElement = null;
         this.overlay = null;
-        this.hasSeenTour = localStorage.getItem('rentledger_tour_seen') === 'true';
+        this.hasSeenTour = localStorage.getItem('arnando_tour_seen') === 'true';
     }
 
     init(userId) {
@@ -55,7 +55,7 @@ class AppTour {
     defineSteps() {
         this.steps = [
             {
-                title: '👋 Добро пожаловать в RentLedger!',
+                title: '👋 Добро пожаловать в Arnando!',
                 content: `Это система для учёта посуточной аренды. Здесь вы можете:<br><br>
                          • Вести учёт объектов недвижимости<br>
                          • Управлять бронированиями<br>
@@ -111,7 +111,7 @@ class AppTour {
             },
             {
                 title: '🎉 Готово!',
-                content: `Теперь вы готовы использовать RentLedger!<br><br>
+                content: `Теперь вы готовы использовать Arnando!<br><br>
                          <strong>Советы для начала:</strong><br>
                          1. Добавьте хотя бы один объект<br>
                          2. Создайте тестовое бронирование<br>
@@ -266,7 +266,7 @@ class AppTour {
         });
 
         // Сохраняем, что тур был показан
-        localStorage.setItem('rentledger_tour_seen', 'true');
+        localStorage.setItem('arnando_tour_seen', 'true');
         this.hasSeenTour = true;
 
         // Показываем сообщение об успехе
@@ -284,7 +284,7 @@ class AppTour {
         `;
         message.innerHTML = `
             <i class="bi bi-check-circle me-2"></i>
-            <strong>Готово!</strong> Теперь вы можете начать использовать RentLedger.
+            <strong>Готово!</strong> Теперь вы можете начать использовать Arnando.
             <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
         `;
 
@@ -299,7 +299,7 @@ class AppTour {
 
     // Метод для перезапуска тура
     restart() {
-        localStorage.removeItem('rentledger_tour_seen');
+        localStorage.removeItem('arnando_tour_seen');
         this.hasSeenTour = false;
         this.start();
     }
