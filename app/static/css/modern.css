@@ -86,6 +86,12 @@ html[data-theme="dark"] .dropdown-item:hover {
     color: var(--ink);
 }
 
+html[data-theme="dark"] .bg-light:not(.text-dark) {
+    background: var(--card-bg) !important;
+    color: var(--ink) !important;
+    border-color: var(--border-color) !important;
+}
+
 .list-group-item {
     background-color: var(--card-bg);
     color: var(--ink);
@@ -265,21 +271,21 @@ h1 { font-size: 1.9rem; }
 .bg-success, .gradient-success {
     background: var(--accent-tint) !important;
     color: var(--accent-dark) !important;
-    border: 1px solid #cfe3de !important;
+    border: 1px solid currentColor !important;
     border-radius: var(--radius-sm);
 }
 
 .bg-warning, .gradient-warning {
     background: var(--official-tint) !important;
     color: var(--official) !important;
-    border: 1px solid #ecd9ba !important;
+    border: 1px solid currentColor !important;
     border-radius: var(--radius-sm);
 }
 
 .bg-danger, .gradient-danger {
     background: var(--danger-tint) !important;
     color: var(--danger) !important;
-    border: 1px solid #efcac3 !important;
+    border: 1px solid currentColor !important;
     border-radius: var(--radius-sm);
 }
 
@@ -288,6 +294,17 @@ h1 { font-size: 1.9rem; }
     color: var(--ink-soft) !important;
     border: 1px solid var(--border-color) !important;
     border-radius: var(--radius-sm);
+}
+
+/* В тёмной теме низкоконтрастная полупрозрачная заливка превращается в
+   грязно-тёмное пятно на и без того тёмной странице — используем
+   непрозрачный фон карточки и цветную рамку вместо заливки-тинта. */
+html[data-theme="dark"] .card.bg-success,
+html[data-theme="dark"] .card.bg-warning,
+html[data-theme="dark"] .card.bg-danger,
+html[data-theme="dark"] .card.bg-info {
+    background: var(--card-bg) !important;
+    border-width: 1px !important;
 }
 
 .bg-primary, .gradient-primary {
