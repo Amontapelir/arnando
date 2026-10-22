@@ -33,6 +33,17 @@
                 </div>
             </div>
 
+            {% if demo_enabled %}
+            <div class="mt-4">
+                <a href="/auth/demo" class="btn btn-success btn-lg px-5">
+                    <i class="bi bi-play-circle"></i> Посмотреть демо
+                </a>
+                <div class="text-muted mt-2">
+                    <small>Без регистрации: три объекта, брони и платежи за последние месяцы</small>
+                </div>
+            </div>
+            {% endif %}
+
             <div class="mt-4">
                 <a href="/login" class="btn btn-primary btn-lg px-4 me-3">
                     <i class="bi bi-box-arrow-in-right"></i> Войти

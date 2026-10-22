@@ -111,6 +111,13 @@
 
     <!-- Основной контент -->
     <main class="container py-4">
+        {% if is_demo_user(user) %}
+        <div class="alert alert-info d-flex flex-wrap justify-content-between align-items-center gap-2" role="alert">
+            <span><i class="bi bi-eye me-1"></i>Это демо-режим: данные вымышленные и сбрасываются при перезапуске сервера.</span>
+            <a href="/register" class="btn btn-sm btn-outline-primary">Создать свой аккаунт</a>
+        </div>
+        {% endif %}
+
         <!-- Уведомления -->
         {% if request.query_params.get('success') %}
         <div class="alert alert-success alert-dismissible fade show" role="alert">

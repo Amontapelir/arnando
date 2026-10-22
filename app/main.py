@@ -6,6 +6,7 @@ from fastapi.staticfiles import StaticFiles
 from contextlib import asynccontextmanager
 
 from app.config import settings
+from app.demo import reset_demo_on_startup
 from app.database import engine, Base
 from app.routers import auth, properties, bookings, transactions, taxes, reports, dashboard, profile
 from app.dependencies import get_current_user
@@ -22,6 +23,8 @@ async def lifespan(app: FastAPI):
     # Создаем таблицы
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
+    if settings.demo_enabled:
+        await reset_demo_on_startup()
     yield
     # При завершении
     await engine.dispose()
@@ -108,6 +111,12 @@ async def quick_start(
             "user": current_user
         }
     )
+
+
+@app.get("/demo")
+async def demo_shortcut():
+    # Короткая ссылка для резюме: arnando.onrender.com/demo
+    return RedirectResponse(url="/auth/demo", status_code=307)
 
 
 @app.get("/login", response_class=HTMLResponse)
